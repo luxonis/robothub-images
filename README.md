@@ -13,7 +13,7 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 
 **Supported operating systems**: currently we support all Ubuntu Server versions from 20.04.
 
-**Supported platforms**: x86 and arm64 (raspberry)
+**Supported platforms**: x86 and arm64 (raspberry) and **only 64bit versions of operating systems are supported!**
 
 
 ## Making first app
