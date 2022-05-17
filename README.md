@@ -21,11 +21,11 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 1. Register you account at https://hub.luxonis.com/
 2. Install RobotHub CLI: 
 ```bash
-    curl https://stg.luxonis.com/cli/robothub-cli-linux
+    /bin/bash -c "$(curl -fsSL https://stg.luxonis.com/cli)"
 ```
 3. Run the following command and log-in to RobotHub
 ```bash
-    ./robothub-cli-linux login
+    robothub login
 ```
 4. Clone this repository
 ```bash
@@ -35,7 +35,7 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 5. Open hello-world example and upload the app to RobotHub
 ```bash
     cd hello-world
-    ./robothub-cli-linux app push .
+    robothub app push .
 ```
 
 ## Deploying the first app to the robots
