@@ -24,8 +24,12 @@ env:
   DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
 
 jobs:
-  preparation:
+  build:
+    name: Build & push images
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     outputs:
       x86_builder_id: ${{ steps.launch_instances.outputs.x86_builder_id }}
       arm_builder_id: ${{ steps.launch_instances.outputs.arm_builder_id }}
