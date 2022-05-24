@@ -13,7 +13,7 @@ armBuilderId=$(echo $armBuilder | jq -r .InstanceId)
 echo "::set-output name=x86_builder_id::${x86BuilderId}"
 echo "::set-output name=arm_builder_id::${armBuilderId}"
 
-aws ec2 wait instance-running --instance-ids "${armBuilderId}" "${x86BuilderId}"
+aws ec2 wait instance-status-ok --instance-ids "${armBuilderId}" "${x86BuilderId}"
 
 x86Ip=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=${x86BuilderId}" --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text)
 armIp=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=instance-id,Values=${armBuilderId}" --query 'Reservations[*].Instances[*].[PublicIpAddress]' --output text)
