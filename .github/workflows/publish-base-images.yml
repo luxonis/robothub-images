@@ -18,7 +18,7 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
-  DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch || "main" }}
+  DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
 
 jobs:
   preparation:

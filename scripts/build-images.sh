@@ -1,5 +1,8 @@
 #!/bin/bash
 
+if [[ -z "${DEPTHAI_BRANCH}" ]]; then
+  DEPTHAI_BRANCH="main"
+fi
 ALPINE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-depthai-${DEPTHAI_BRANCH}"
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}"
 
