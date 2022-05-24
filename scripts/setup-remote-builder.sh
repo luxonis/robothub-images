@@ -6,18 +6,8 @@ mkdir -p ~/.ssh/
 touch ~/.ssh/aws_key
 echo "${SSH_KEY}" > ~/.ssh/aws_key
 chmod 600 ~/.ssh/aws_key
-eval $(ssh-agent) 
+eval $(ssh-agent)
 ssh-add ~/.ssh/aws_key
-
-touch ~/.ssh/config
-echo "Host ${X86_BUILDER_IP}" >> ~/.ssh/config
-echo "  HostName ${X86_BUILDER_IP}" >> ~/.ssh/config
-echo "  User ubuntu" >> ~/.ssh/config
-echo "  IdentityFile /home/runner/.ssh/aws_key" >> ~/.ssh/config
-echo "Host ${ARM_BUILDER_IP}" >> ~/.ssh/config
-echo "  HostName ${ARM_BUILDER_IP}" >> ~/.ssh/config
-echo "  User ubuntu" >> ~/.ssh/config
-echo "  IdentityFile /home/runner/.ssh/aws_key" >> ~/.ssh/config
 
 docker buildx create \
   --name remotebuilder \
