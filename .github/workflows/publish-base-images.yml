@@ -32,6 +32,10 @@ jobs:
     steps:
       - 
         uses: actions/checkout@v3
+      -
+        name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
       - 
         name: Launch instances
         id: launch_instances

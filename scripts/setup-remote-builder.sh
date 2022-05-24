@@ -33,3 +33,5 @@ docker buildx create \
   --node arm64 \
   --platform linux/arm64,linux/arm/v7,linux/arm/v6 \
   ssh://ubuntu@${ARM_BUILDER_IP}
+
+docker buildx inspect --bootstrap --builder remotebuilder
