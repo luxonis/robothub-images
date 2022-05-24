@@ -5,8 +5,8 @@ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip
 unzip awscliv2.zip
 sudo ./aws/install --update
 
-x86Builder=$(aws ec2 run-instances --image-id ${AWS_X86_IMAGE_ID} --count 1 --instance-type c5.4xlarge --key-name docker-builder --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
-armBuilder=$(aws ec2 run-instances --image-id ${AWS_ARM64_IMAGE_ID} --count 1 --instance-type a1.4xlarge --key-name docker-builder --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
+x86Builder=$(aws ec2 run-instances --image-id ${AWS_X86_IMAGE_ID} --count 1 --instance-type c5.4xlarge --key-name docker-builder --security-group-ids sg-06ac69d4db0cb10ac --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
+armBuilder=$(aws ec2 run-instances --image-id ${AWS_ARM64_IMAGE_ID} --count 1 --instance-type a1.4xlarge --key-name docker-builder --security-group-ids sg-06ac69d4db0cb10ac --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
 
 x86BuilderId=$(echo $x86Builder | jq -r .InstanceId)
 armBuilderId=$(echo $armBuilder | jq -r .InstanceId)
