@@ -1,0 +1,3 @@
+depthai
+paho-mqtt
+paho-socket

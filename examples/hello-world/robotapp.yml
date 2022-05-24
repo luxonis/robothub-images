@@ -1,0 +1,22 @@
+version: '1.0.6' # required
+image: luxonis/basic-app # required
+name: Luxonis Basic App # required
+description: Display camera outputs # required
+language: python # optional (visible in UI)
+url: https://github.com/luxonis/depthai
+prerequisites: # The following is just an example, ignored by our server at the moment
+  stereoDepth: true # Optional - true -> only OAK-D cameras are allowed
+  chipset: ['myriad', 'keembay'] # Optional - allows filtering by generation
+  camera: ['OAK-D-Lite'] # Optional - allows filtering specific camera models
+configuration:
+  send_still_picture:
+    label: 'Send still picture'
+    type: 'boolean'
+    default: false
+  send_still_picture_interval:
+    label: 'Send still picture interval in seconds'
+    type: 'num-range'
+    step: 1
+    min: 5
+    max: 180
+    default: 60

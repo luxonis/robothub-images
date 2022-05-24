@@ -1,0 +1,56 @@
+name: Build and publish base images
+concurrency: aws-worker
+
+on:
+  workflow_dispatch:
+    inputs:
+      depthaiBranch:
+        description: 'DepthAI Git branch'
+        required: true
+        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'robothub_sdk/**/*'
+
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
+  AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
+  DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch || "main" }}
+
+jobs:
+  preparation:
+    runs-on: ubuntu-latest
+    outputs:
+      x86_builder_id: ${{ steps.launch_instances.outputs.x86_builder_id }}
+      arm_builder_id: ${{ steps.launch_instances.outputs.arm_builder_id }}
+    steps:
+      - 
+        uses: actions/checkout@v3
+      - 
+        name: Launch instances
+        id: launch_instances
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1c
+        run: |
+          ./scripts/launch-builders.sh
+      -
+        name: Build images
+        env:
+          SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+        run: |
+          ./scripts/setup-remote-builder.sh
+          ./scripts/build-images.sh
+      -
+        name: Terminate instances
+        if: ${{ always() && steps.launch_instances.result == 'success' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1c
+        run: |
+          ./scripts/stop-builders.sh

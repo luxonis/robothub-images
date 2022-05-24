@@ -1,0 +1,2 @@
+include src/robothub_sdk/*.py
+include requirements.txt
