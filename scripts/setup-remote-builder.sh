@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir -p ~/.ssh/
+touch ~/.ssh/aws_key
 echo "${SSH_KEY}" > ~/.ssh/aws_key
 chmod 600 ~/.ssh/aws_key
 eval $(ssh-agent) 
