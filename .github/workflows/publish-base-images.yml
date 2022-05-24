@@ -20,6 +20,7 @@ env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
+  AWS_DEFAULT_REGION: us-east-1
   DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
 
 jobs:
@@ -37,11 +38,11 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
         run: |
           ./scripts/launch-builders.sh
       -
         name: Build images
+        continue-on-error: true
         env:
           SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
           X86_BUILDER_IP: ${{ steps.launch_instances.outputs.x86_ip }}
@@ -51,10 +52,9 @@ jobs:
           ./scripts/build-images.sh
       -
         name: Terminate instances
-        if: ${{ always() && steps.launch_instances.result == 'success' }}
+        if: ${{ always() && steps.launch_instances.outcome == 'success' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1c
         run: |
           ./scripts/stop-builders.sh
