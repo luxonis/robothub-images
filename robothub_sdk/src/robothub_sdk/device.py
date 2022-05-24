@@ -385,6 +385,8 @@ class Device:
         res: CameraResolution = CameraResolution.MIN_RESOLUTION,
         color_order=dai.ColorCameraProperties.ColorOrder.BGR,
         preview_size: Tuple[int, int] = None,
+        still_size: Tuple[int, int] = None,
+        isp_scale: Tuple[int, int] = None,
     ) -> Union[ColorCamera, MonoCamera]:
         if camera == dai.CameraBoardSocket.RGB:
             cam_rgb = self.nodes.color_camera or self.pipeline.createColorCamera()
@@ -392,6 +394,10 @@ class Device:
 
             if preview_size is not None:
                 cam_rgb.setPreviewSize(*preview_size)
+            if still_size is not None:
+                cam_rgb.setStillSize(*still_size)
+            if isp_scale is not None:
+                cam_rgb.setIspScale(*isp_scale)
             cam_rgb.setInterleaved(False)
             cam_rgb.setResolution(res.for_socket(camera))
             cam_rgb.setColorOrder(color_order)
