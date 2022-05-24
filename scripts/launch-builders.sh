@@ -9,7 +9,7 @@ sudo apt-get update
 sudo apt-get install -y jq
 
 x86Builder=$(aws ec2 run-instances --image-id ${AWS_X86_IMAGE_ID} --count 1 --instance-type c5.4xlarge --key-name docker-builder --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
-armBuilder$(aws ec2 run-instances --image-id ${AWS_ARM64_IMAGE_ID} --count 1 --instance-type a1.4xlarge --key-name docker-builder --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
+armBuilder=$(aws ec2 run-instances --image-id ${AWS_ARM64_IMAGE_ID} --count 1 --instance-type a1.4xlarge --key-name docker-builder --instance-market-options '{ "MarketType": "spot" }' | jq -r .Instances[0])
 
 x86Ip=$(echo $x86Builder | jq -r .PublicDnsName)
 armIp=$(echo $armBuilder | jq -r .PublicDnsName)
