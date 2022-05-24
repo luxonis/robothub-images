@@ -196,8 +196,8 @@ class AgentClient:
         payload: ReportedDevice = {
             "serialNumber": info.getMxId(),
             "state": info.state.value,
-            "protocol": info.desc.protocol.value,
-            "platform": info.desc.platform.value,
+            "protocol": info.protocol.value,
+            "platform": info.platform.value,
             "boardName": eeprom.boardName,
             "boardRev": eeprom.boardRev,
         }
