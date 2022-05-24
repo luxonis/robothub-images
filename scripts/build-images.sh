@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 if [[ -z "${DEPTHAI_BRANCH}" ]]; then
   DEPTHAI_BRANCH="main"
