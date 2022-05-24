@@ -7,6 +7,8 @@ fi
 ALPINE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-depthai-${DEPTHAI_BRANCH}"
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}"
 
+docker buildx use remotebuilder
+
 echo "Building alpine..."
 # Alpine
 DOCKER_BUILDKIT=1 docker buildx \
