@@ -13,13 +13,13 @@ docker buildx create \
   --name remotebuilder \
   --node amd64 \
   --platform linux/amd64,linux/386 \
-  ssh://ubuntu@${{ steps.launch_instances.outputs.x86_ip }}
+  ssh://ubuntu@${X86_BUILDER_IP}
 
 docker buildx create \
   --name remotebuilder \
   --append \
   --node arm64 \
   --platform linux/arm64,linux/arm/v7,linux/arm/v6 \
-  ssh://ubuntu@${{ steps.launch_instances.outputs.arm_ip }}
+  ssh://ubuntu@${ARM_BUILDER_IP}
 
 docker buildx use remotebuilder

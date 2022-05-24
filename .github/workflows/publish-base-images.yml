@@ -44,6 +44,8 @@ jobs:
         name: Build images
         env:
           SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+          X86_BUILDER_IP: ${{ steps.launch_instances.outputs.x86_ip }}
+          ARM_BUILDER_IP: ${{ steps.launch_instances.outputs.arm_ip }}
         run: |
           ./scripts/setup-remote-builder.sh
           ./scripts/build-images.sh
