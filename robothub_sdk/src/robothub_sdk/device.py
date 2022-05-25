@@ -385,6 +385,7 @@ class Device:
         res: CameraResolution = CameraResolution.MIN_RESOLUTION,
         color_order=dai.ColorCameraProperties.ColorOrder.BGR,
         preview_size: Tuple[int, int] = None,
+        video_size: Tuple[int, int] = None,
         still_size: Tuple[int, int] = None,
         isp_scale: Tuple[int, int] = None,
     ) -> Union[ColorCamera, MonoCamera]:
@@ -399,6 +400,8 @@ class Device:
                 cam_rgb.setIspScale(*isp_scale)
             if preview_size is not None:
                 cam_rgb.setPreviewSize(*preview_size)
+            if video_size is not None:
+                cam_rgb.setVideoSize(*video_size)
             if still_size is not None:
                 cam_rgb.setStillSize(*still_size)
             cam_rgb.setInterleaved(False)
