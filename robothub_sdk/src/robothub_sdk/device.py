@@ -392,7 +392,9 @@ class Device:
             cam_rgb = self.nodes.color_camera or self.pipeline.createColorCamera()
             self.nodes.color_camera = cam_rgb
 
-            cam_rgb.setResolution(res.for_socket(camera))
+            depthai_res = res.for_socket(camera)
+            print(f'setting {camera} resolution to {depthai_res}')
+            cam_rgb.setResolution(depthai_res)
             if isp_scale is not None:
                 cam_rgb.setIspScale(*isp_scale)
             if preview_size is not None:
