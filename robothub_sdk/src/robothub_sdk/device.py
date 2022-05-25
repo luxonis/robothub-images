@@ -392,14 +392,14 @@ class Device:
             cam_rgb = self.nodes.color_camera or self.pipeline.createColorCamera()
             self.nodes.color_camera = cam_rgb
 
+            cam_rgb.setResolution(res.for_socket(camera))
+            if isp_scale is not None:
+                cam_rgb.setIspScale(*isp_scale)
             if preview_size is not None:
                 cam_rgb.setPreviewSize(*preview_size)
             if still_size is not None:
                 cam_rgb.setStillSize(*still_size)
-            if isp_scale is not None:
-                cam_rgb.setIspScale(*isp_scale)
             cam_rgb.setInterleaved(False)
-            cam_rgb.setResolution(res.for_socket(camera))
             cam_rgb.setColorOrder(color_order)
             cam_rgb.setFps(fps)
             if orientation is not None:
