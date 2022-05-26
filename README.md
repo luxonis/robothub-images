@@ -34,7 +34,7 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 ```
 5. Open hello-world example and upload the app to RobotHub
 ```bash
-    cd hello-world
+    cd examples/hello-world
     robothub app push .
 ```
 
