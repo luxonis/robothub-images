@@ -6,10 +6,13 @@ if [[ -z "${DEPTHAI_BRANCH}" ]]; then
 fi
 ALPINE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-depthai-${DEPTHAI_BRANCH}"
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}"
+LATEST_TAG="ghcr.io/luxonis/robothub-base-app:latest"
 
+echo "Building alpine..."
 # Alpine
 DOCKER_BUILDKIT=1 docker buildx \
   build \
+  --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
   -t $ALPINE_TAG \
@@ -17,12 +20,19 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/alpine/Dockerfile \
   ./robothub_sdk
 
+echo "Building ubuntu..."
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
   build \
+  --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
   -t $UBUNTU_TAG \
   --push \
   --file ./robothub_sdk/docker/ubuntu/Dockerfile \
   ./robothub_sdk
+
+if [[ "${DEPTHAI_BRANCH}" == "main" ]]; then
+  docker tag "$ALPINE_TAG" "$LATEST_TAG"
+  docker push "$LATEST_TAG"
+fi
