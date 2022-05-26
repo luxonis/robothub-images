@@ -58,7 +58,7 @@ class CameraResolution(enum.Enum):
                 return dai.ColorCameraProperties.SensorResolution.THE_4_K
             if self == CameraResolution.MIN_RESOLUTION:
                 return dai.ColorCameraProperties.SensorResolution.THE_1080_P
-            if self.value == "1200p"
+            if self.value == "1200p":
                 return dai.ColorCameraProperties.SensorResolution.THE_1200_P
             if self.value not in _COLOR_RESOLUTION:
                 print(f'{self.value} is not supported for RGB camera! fallback to THE_1080_P');
