@@ -36,7 +36,6 @@ class App:
     devices: List[Device]
     loop: asyncio.AbstractEventLoop
 
-    _exited: bool
     _loop_thread: Thread
     _run_without_devices: bool
     _comm: AgentClient
@@ -75,7 +74,6 @@ class App:
         self._loop_thread = Thread(target=self._background_loop, daemon=True)
         self._loop_thread.start()
 
-        self._exited = False
         self._running = None
         self._comm = AgentClient(self)
         self._min_update_rate = 1
@@ -138,7 +136,7 @@ class App:
                 self.stop()
                 print(e, "Application cannot start")
             except GeneratorExit:
-                pass
+                raise
             except BaseException as e:
                 traceback.print_exc()
                 self.fail_counter += 1
@@ -184,7 +182,10 @@ class App:
             if not IS_INTERACTIVE:
                 warnings.warn(error)
 
-        while not self._exited:
+        self.running = True
+        self._running = self._start()
+
+        while self.running:
             update_start = time.monotonic()
             self.update()
             update_duration = time.monotonic() - update_start
@@ -200,7 +201,6 @@ class App:
         self._process_exit()
 
     def _process_exit(self):
-        self._exited = True
         self.stop()
         self.on_exit()
 
