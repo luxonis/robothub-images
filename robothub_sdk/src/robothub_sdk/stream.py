@@ -1,5 +1,6 @@
 from __future__ import annotations
 import enum
+import time
 import uuid
 from functools import cached_property
 from typing import TYPE_CHECKING, List, Callable, Any, ClassVar, Optional, Final, Tuple
@@ -32,6 +33,7 @@ class Stream:
     description: Optional[str]
     is_published: bool
     last_value: Optional[dai.ADatatype]
+    last_timestamp: float
     published: Optional[PublishedStream]
     resolution: Tuple[int, int]
     _output_queue_name: Optional[str]
@@ -83,6 +85,7 @@ class Stream:
         self._output_queue_name = output_queue_name or Stream._gen_output_queue_name()
         self._xlink_output = None
         self.last_value = None
+        self.last_timestamp = 0
         self.published = None
         self.resolution = resolution if resolution else (0, 0)
         self._callbacks = []
@@ -110,15 +113,11 @@ class Stream:
 
         self.published = PublishedStream(self.device, self.type, source=self, rate=self.rate, description=description)
 
-    def consume_queue(self, queue: dai.DataOutputQueue) -> bool:
-        items = queue.tryGetAll()
-
-        for item in items:
-            self.last_value = item
-            for callback in self._callbacks:
-                callback(item)
-            return True
-        return False
+    def queue_callback(self, data: dai.ADatatype) -> None:
+        self.last_value = data
+        self.last_timestamp = time.monotonic()
+        for callback in self._callbacks:
+            callback(data)
 
 
 class InputStream:

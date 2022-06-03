@@ -240,7 +240,6 @@ class App:
             device.internal.close()
         self.devices.clear()
 
-        queues: List[Tuple[dai.DataOutputQueue, Stream]] = []
         openvino_version = dai.OpenVINO.Version.VERSION_2021_4
         usb2_mode = False
         self.on_initialize(devices)
@@ -285,16 +284,24 @@ class App:
                     if consumed_queue:
                         if stream.rate > 0:
                             self._min_update_rate = min(self._min_update_rate, 1 / stream.rate)
-                        queues.append((consumed_queue, stream))
+                        consumed_queue.addCallback(stream.queue_callback)
 
                 self.devices.append(device)
 
             self._comm.report_online()
+            last_run = 0
             while self.running:
                 had_items = False
-                for (queue, stream) in queues:
-                    had_items = stream.consume_queue(queue) or had_items
+                for device in self.devices:
+                    for stream in device.streams.outputs():
+                        if stream.last_timestamp > last_run:
+                            had_items = True
+                            break
+                    else:
+                        continue
+                    break
 
                 if had_items:
                     self.on_update()
+                last_run = time.monotonic()
                 yield had_items
