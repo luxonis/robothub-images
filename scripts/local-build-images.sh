@@ -1,57 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 set -Eeuo pipefail
 
-if [[ -z "${DEPTHAI_BRANCH}" ]]; then
-  DEPTHAI_BRANCH="main"
-fi
+SCRIPT_PATH=$(realpath "$0")
+ROOT_DIR=$(dirname "$(dirname "$SCRIPT_PATH")")
 
-imageSuffix=""
-cacheSuffix="-buildcache"
-if [[ "$GITHUB_REF_NAME" != "main" ]]; then
-  cacheSuffix="-last-buildcache"
-  if [[ "$GITHUB_REF_NAME" == "develop" ]]; then
-    cacheSuffix="-develop-buildcache"
-    imageSuffix="-develop"
-  else
-    imageSuffix="-${GITHUB_SHA}"
-  fi
-fi
+DEPTHAI_BRANCH="main"
+
+imageSuffix="-local"
+cacheSuffix="-local-buildcache"
 
 ALPINE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 ALPINE_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-${DEPTHAI_BRANCH}${cacheSuffix}"
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 UBUNTU_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-${DEPTHAI_BRANCH}${cacheSuffix}"
-LATEST_TAG="ghcr.io/luxonis/robothub-base-app:latest"
 
 echo "Building alpine..."
 # Alpine
 DOCKER_BUILDKIT=1 docker buildx \
   build \
-  --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
   --cache-to type=registry,ref="${ALPINE_CACHE_TAG}" \
   --cache-from type=registry,ref="${ALPINE_CACHE_TAG}" \
   -t $ALPINE_TAG \
   --push \
-  --file ./robothub_sdk/docker/alpine/Dockerfile \
-  ./robothub_sdk
+  --file "${ROOT_DIR}"/robothub_sdk/docker/alpine/Dockerfile \
+  "${ROOT_DIR}"/robothub_sdk
 
 echo "Building ubuntu..."
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
   build \
-  --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
   --cache-to type=registry,ref="${UBUNTU_CACHE_TAG}" \
   --cache-from type=registry,ref="${UBUNTU_CACHE_TAG}" \
   -t $UBUNTU_TAG \
   --push \
-  --file ./robothub_sdk/docker/ubuntu/Dockerfile \
-  ./robothub_sdk
-
-if [[ "${DEPTHAI_BRANCH}" == "main" && "${GITHUB_REF_NAME}" == "main" ]]; then
-  docker tag "$ALPINE_TAG" "$LATEST_TAG"
-  docker push "$LATEST_TAG"
-fi
+  --file "${ROOT_DIR}"/robothub_sdk/docker/ubuntu/Dockerfile \
+  "${ROOT_DIR}"/robothub_sdk

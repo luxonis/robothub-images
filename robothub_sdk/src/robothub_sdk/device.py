@@ -3,6 +3,7 @@ from __future__ import annotations
 import collections
 import json
 import ipaddress
+from threading import Lock
 from bisect import bisect_right
 from functools import partial, cached_property
 from pathlib import Path
@@ -41,57 +42,60 @@ class SyncCallback(Protocol):
 class SynchronizedStream:
     streams: Tuple[Stream]
     callback: SyncCallback
-    max_rate: int
+    rate: int
     last_completed_sequence: int
 
     _queue: Deque[Dict[int, dai.ADatatype]]
     _seq: Deque[int]
     _streams_len: int
+    _receive_lock: Lock
 
     def __init__(self, streams: Iterable[Stream], callback: SyncCallback):
         self.streams = tuple(streams)
         self._streams_len = len(self.streams)
+        self._receive_lock = Lock()
         assert self._streams_len > 1
 
         self.callback = callback
         self.last_completed_sequence = 0
-        self.max_rate = 1
+        self.rate = 30
 
         for index, stream in enumerate(self.streams):
             stream.consume(partial(self._receive, index))
-            self.max_rate = max(stream.rate, self.max_rate)
+            self.rate = min(stream.rate, self.rate)
 
-        self._queue = collections.deque(maxlen=self.max_rate * 2)
-        self._seq = collections.deque(maxlen=self.max_rate * 2)
+        self._queue = collections.deque(maxlen=self.rate)
+        self._seq = collections.deque(maxlen=self.rate)
 
     def _receive(self, index: int, data: dai.ADatatype):
-        if isinstance(data, (dai.ImgFrame, dai.ImgDetections, dai.NNData)):
-            i = data.getSequenceNum()
-            if i <= self.last_completed_sequence:
-                return
+        with self._receive_lock:
+            if isinstance(data, (dai.ImgFrame, dai.ImgDetections, dai.NNData)):
+                i = data.getSequenceNum()
+                if i <= self.last_completed_sequence:
+                    return
 
-            frames: Optional[Dict[int, dai.ADatatype]] = None
-            if len(self._seq) == 0 or self._seq[-1] < i:
-                self._seq.append(i)
-                frames = {index: data}
-                self._queue.append(frames)
-            else:
-                seq_index = bisect_right(self._seq, i)
-                if seq_index and self._seq[seq_index - 1] == i:
-                    frames = self._queue[seq_index - 1]
-                    frames[index] = data
+                frames: Optional[Dict[int, dai.ADatatype]] = None
+                if len(self._seq) == 0 or self._seq[-1] < i:
+                    self._seq.append(i)
+                    frames = {index: data}
+                    self._queue.append(frames)
+                else:
+                    seq_index = bisect_right(self._seq, i)
+                    if seq_index and self._seq[seq_index - 1] == i:
+                        frames = self._queue[seq_index - 1]
+                        frames[index] = data
 
-            if frames and len(frames) == self._streams_len:
-                self.last_completed_sequence = i
-                args: List[dai.ADatatype] = [frames[i] for i in range(0, self._streams_len)]
-                self.callback(*args)
-        elif len(self._queue) > 0:
-            frames = self._queue[-1]
-            frames[index] = data
-            if len(frames) == self._streams_len:
-                self.last_completed_sequence = self._seq[-1]
-                args: List[dai.ADatatype] = [frames[i] for i in range(0, self._streams_len)]
-                self.callback(*args)
+                if frames and len(frames) == self._streams_len:
+                    self.last_completed_sequence = i
+                    args: List[dai.ADatatype] = [frames[i] for i in range(0, self._streams_len)]
+                    self.callback(*args)
+            elif len(self._queue) > 0:
+                frames = self._queue[-1]
+                frames[index] = data
+                if len(frames) == self._streams_len:
+                    self.last_completed_sequence = self._seq[-1]
+                    args: List[dai.ADatatype] = [frames[i] for i in range(0, self._streams_len)]
+                    self.callback(*args)
 
 
 class Device:
@@ -228,6 +232,7 @@ class Device:
     id: str
     name: str
     device_info: dai.DeviceInfo
+    calibration: dai.CalibrationHandler
     eeprom: dai.EepromData
     cameras: List[dai.CameraBoardSocket]
     usb_speed = dai.UsbSpeed
@@ -243,7 +248,8 @@ class Device:
         self.id = device_id
         self.name = self.id  # TODO!!
         self.device_info = device_info
-        self.eeprom = device.readCalibration().getEepromData()
+        self.calibration = device.readCalibration()
+        self.eeprom = self.calibration.getEepromData()
         self.cameras = device.getConnectedCameras()
         self.usb_speed = device.getUsbSpeed()
         self.internal = device

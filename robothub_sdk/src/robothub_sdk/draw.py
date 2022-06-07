@@ -31,7 +31,15 @@ def frame_norm(frame: np.ndarray, bbox: List[float]) -> np.ndarray:
     return (np.clip(np.array(bbox), 0, 1) * norm_vals).astype(int)
 
 
-def draw_detection(detection: dai.ImgDetection, frame: np.ndarray):
+def draw_detection(detection: dai.ImgDetection, frame: np.ndarray, color: Optional[Tuple[int]] = None):
+
+    # validate color
+    if color is not None:
+        if len(color) != 3:
+            raise ValueError("Color must be a tuple of 3 unsigned integers representing color in BGR format.")
+    else: 
+        color = _BBOX_COLORS[detection.label]
+
     bbox = frame_norm(frame, [detection.xmin, detection.ymin, detection.xmax, detection.ymax])
     # bbox[::2] += self._crop_offset_x(frame)
     cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), _BBOX_COLORS[detection.label], 2)
