@@ -1,4 +1,4 @@
-FROM ghcr.io/luxonis/robothub-base-app:alpine-depthai-main
+FROM ghcr.io/luxonis/robothub-base-app:latest
 
 ARG FILE=app.py
 ADD $FILE run.py

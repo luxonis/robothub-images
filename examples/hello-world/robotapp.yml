@@ -1,9 +1,9 @@
-version: '1.0.6' # required
+version: '1.1.0' # required
 image: luxonis/basic-app # required
 name: Luxonis Basic App # required
 description: Display camera outputs # required
 language: python # optional (visible in UI)
-url: https://github.com/luxonis/depthai
+url: https://github.com/luxonis/robothub-apps
 prerequisites: # The following is just an example, ignored by our server at the moment
   stereoDepth: true # Optional - true -> only OAK-D cameras are allowed
   chipset: ['myriad', 'keembay'] # Optional - allows filtering by generation
@@ -20,3 +20,33 @@ configuration:
     min: 5
     max: 180
     default: 60
+  example_choice:
+    label: 'Example - does nothing'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae iaculis dolor.'
+    type: 'choice'
+    default: null
+    options:
+      - 
+        key: value_1
+        label: 'Value 1'
+      - 
+        key: value_2
+        label: 'Value 2'
+  example_multiple_choice:
+    label: 'Example - does nothing'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae iaculis dolor.'
+    type: 'multiple-choice'
+    default: null
+    options:
+      - 
+        key: value_1
+        label: 'Value 1'
+      -
+        key: value_2
+        label: 'Value 2'
+  example_text:
+    label: 'Example - does nothing'
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae iaculis dolor.'
+    type: 'text'
+    default: null
+    prefix: 'PREFIX'
