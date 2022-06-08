@@ -102,16 +102,17 @@ class Stream:
             self.output_node.link(self._xlink_output.input)
         return self._xlink_output
 
-    def publish(self, description: str = None) -> None:
+    def publish(self, description: str = None) -> PublishedStream:
         if self.type not in PUBLISHABLE_TYPES:
             raise RuntimeError(f"Publishing stream type {self.type.name} is not supported")
         if self.published:
-            return
+            return self.published
 
         if description is None:
             description = self.description
 
         self.published = PublishedStream(self.device, self.type, source=self, rate=self.rate, description=description)
+        return self.published
 
     def queue_callback(self, data: dai.ADatatype) -> None:
         self.last_value = data
