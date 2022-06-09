@@ -265,12 +265,12 @@ class App:
                     stream.register_queue(queue)
 
                 for stream in device.streams.outputs():
-                    consumed_queue = dai_device.getOutputQueue(stream.output_queue_name, maxSize=stream.rate, blocking=False) if stream.is_consumed else None
+                    consumed_queue = dai_device.getOutputQueue(stream.output_queue_name, maxSize=2, blocking=False) if stream.is_consumed else None
                     published_queue = None
                     if stream.is_published:
                         published_queue = consumed_queue
                         if stream.published.output_queue_name != stream.output_queue_name:
-                            published_queue = dai_device.getOutputQueue(stream.published.output_queue_name, maxSize=stream.published.rate, blocking=False)
+                            published_queue = dai_device.getOutputQueue(stream.published.output_queue_name, maxSize=2, blocking=False)
 
                     if published_queue:
                         if stream.published.type == StreamType.ENCODED:

@@ -257,6 +257,9 @@ class Device:
         #: depthai.Pipeline: Ready to use requested pipeline. Can be passed to :obj:`depthai.Device` to start execution
         self.pipeline = dai.Pipeline()
 
+        if device_info.protocol in (dai.XLinkProtocol.X_LINK_USB_VSC, dai.XLinkProtocol.X_LINK_USB_CDC):
+            self.pipeline.setXLinkChunkSize(0)
+
         self.nodes = Device.Nodes()
         self.streams = Device.Streams(self)
         self.streams.statistics.publish()
@@ -316,7 +319,7 @@ class Device:
         nn.setBlobPath(str(blob_path.resolve().absolute()))
         nn.setNumInferenceThreads(2)
         nn.input.setBlocking(False)
-        nn.input.setQueueSize(2)
+        nn.input.setQueueSize(1)
 
         # TODO we should also adjust resolution if needed
         if depth is not None:
@@ -465,6 +468,8 @@ class Device:
         enc.setDefaultProfilePreset(fps, profile)
         enc.setQuality(quality)
         enc.setKeyframeFrequency(fps)
+        enc.input.setBlocking(False)
+        enc.input.setQueueSize(1)
         output.link(enc.input)
         return enc
 
