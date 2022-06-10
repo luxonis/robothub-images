@@ -1,7 +1,8 @@
-import json
 import uuid
 from datetime import datetime
 from typing import Optional, List, Any
+
+from . import json
 
 
 class Detection:
@@ -23,7 +24,7 @@ class Detection:
         self.created_at = datetime.now()
 
     def get_payload(self) -> str:
-        payload = {"id": str(self.id), "title": self.title, "createdAt": self.created_at.isoformat()}
+        payload = {"id": self.id, "title": self.title, "createdAt": self.created_at}
         if self.tags:
             payload["tags"] = self.tags
         if self.data:

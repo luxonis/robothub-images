@@ -1,5 +1,4 @@
 import atexit
-import json
 import os
 import signal
 import uuid
@@ -22,6 +21,7 @@ from .device import Device
 from .error import RobotHubFatalException
 from .storage import store_data
 from .stream import Stream, StreamType
+from . import json
 
 
 class App:

@@ -1,5 +1,4 @@
 from __future__ import annotations
-import json
 import sys
 import urllib.request
 import base64
@@ -19,6 +18,7 @@ from .error import RobotHubFatalException, RobotHubConnectionException, RobotHub
 from .router import router
 from .rest import Request, Response
 from .stream import PublishedStream
+from . import json
 
 if TYPE_CHECKING:
     from .app import App
