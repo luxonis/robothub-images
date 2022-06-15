@@ -276,6 +276,7 @@ class Device:
         full_fov=True,
         confidence: float = None,
         metadata: dict = None,
+        roi: Tuple[float, float, float, float] = None
     ) -> Tuple[SupportedNeuralNetworks, Stream, Stream]:
         assert source.output_node is not None
         assert source.type == StreamType.FRAME
@@ -325,12 +326,14 @@ class Device:
         if depth is not None:
             depth.depth.link(nn.inputDepth)
 
-        if source.resolution != input_size:
+        if source.resolution != input_size or roi is not None:
             manip_nn = self.pipeline.createImageManip()
             manip_nn.setKeepAspectRatio(not full_fov)
             manip_nn.initialConfig.setResize(*input_size)
             # The NN model expects BGR input. By default, ImageManip output type would be same as input (gray in this case)
-            manip_nn.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
+            if input_size is not None: manip_nn.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
+            # Set crop if set
+            if roi is not None: manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
             manip_nn.out.link(nn.input)
             source.output_node.link(manip_nn.inputImage)

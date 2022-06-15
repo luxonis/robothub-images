@@ -1,4 +1,4 @@
-from typing import List, Final
+from typing import List, Final, Optional, Tuple
 import depthai as dai
 import numpy as np
 import cv2
