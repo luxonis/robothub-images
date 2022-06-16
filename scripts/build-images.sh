@@ -18,14 +18,26 @@ if [[ "$GITHUB_REF_NAME" != "main" ]]; then
 fi
 
 ALPINE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
-ALPINE_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:alpine-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 ALPINE_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:alpine-${DEPTHAI_BRANCH}${cacheSuffix}"
+
+ALPINE_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:alpine-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 ALPINE_CACHE_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:alpine-${DEPTHAI_BRANCH}${cacheSuffix}"
+
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 UBUNTU_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-${DEPTHAI_BRANCH}${cacheSuffix}"
 LATEST_TAG="ghcr.io/luxonis/robothub-base-app:latest"
 
+echo "================================"
+echo "Building images..."
+echo "DEPTHAI_BRANCH=${DEPTHAI_BRANCH}"
+echo "IMAGE_SUFFIX=${imageSuffix}"
+echo "CACHE_SUFFIX=${cacheSuffix}"
+echo "================================"
+
+echo "================================"
 echo "Building alpine..."
+echo "=> ${ALPINE_TAG}"
+echo "================================"
 # Alpine
 DOCKER_BUILDKIT=1 docker buildx \
   build \
@@ -39,6 +51,20 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/alpine/Dockerfile \
   ./robothub_sdk
 
+if [[ "${DEPTHAI_BRANCH}" == "main" && "${GITHUB_REF_NAME}" == "main" ]]; then
+  echo "================================"
+  echo "Pushing as latest"
+  echo "=> ${LATEST_TAG}"
+  echo "================================"
+  docker pull "$ALPINE_TAG"
+  docker tag "$ALPINE_TAG" "$LATEST_TAG"
+  docker push "$LATEST_TAG"
+fi
+
+echo "================================"
+echo "Building alpine (dev)..."
+echo "=> ${ALPINE_DEV_TAG}"
+echo "================================"
 # Alpine Dev
 DOCKER_BUILDKIT=1 docker buildx \
   build \
@@ -53,7 +79,10 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/alpine/Dockerfile.dev \
   ./robothub_sdk
 
+echo "================================"
 echo "Building ubuntu..."
+echo "=> ${UBUNTU_TAG}"
+echo "================================"
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
   build \
@@ -67,7 +96,6 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/ubuntu/Dockerfile \
   ./robothub_sdk
 
-if [[ "${DEPTHAI_BRANCH}" == "main" && "${GITHUB_REF_NAME}" == "main" ]]; then
-  docker tag "$ALPINE_TAG" "$LATEST_TAG"
-  docker push "$LATEST_TAG"
-fi
+echo "================================"
+echo "All done!"
+echo "================================"
