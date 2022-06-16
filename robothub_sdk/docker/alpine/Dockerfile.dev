@@ -1,7 +1,7 @@
 ARG FROM_IMAGE_TAG
 FROM ${FROM_IMAGE_TAG}
 
-RUN set -eux & apk add --no-cache nodejs yarn alpine-sdk bash libstdc++ libc6-compat
+RUN set -eux & apk add --no-cache nodejs npm yarn alpine-sdk bash libstdc++ libc6-compat
 RUN npm config set python python3
 
 RUN yarn global add code-server
