@@ -1,0 +1,17 @@
+ARG FROM_IMAGE_TAG
+FROM ${FROM_IMAGE_TAG}
+
+RUN set -eux & apk add --no-cache nodejs yarn alpine-sdk bash libstdc++ libc6-compat
+RUN npm config set python python3
+
+RUN yarn global add code-server
+ADD docker/vscode.config /vscode.config
+RUN mkdir -p /data/vscode/extensions
+
+RUN code-server --extensions-dir /data/vscode/extensions --install-extension redhat.vscode-yaml
+RUN code-server --extensions-dir /data/vscode/extensions --install-extension ms-python.python
+RUN code-server --extensions-dir /data/vscode/extensions --install-extension vscode.docker
+
+VOLUME /app
+
+CMD ["code-server", "--config", "/vscode.config", "/app"]
