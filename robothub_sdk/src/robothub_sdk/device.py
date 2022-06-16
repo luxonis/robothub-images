@@ -327,6 +327,8 @@ class Device:
 
         if source.resolution != input_size:
             manip_nn = self.pipeline.createImageManip()
+            manip_nn.inputImage.setQueueSize(1)
+            manip_nn.inputImage.setBlocking(False)
             manip_nn.setKeepAspectRatio(not full_fov)
             manip_nn.initialConfig.setResize(*input_size)
             # The NN model expects BGR input. By default, ImageManip output type would be same as input (gray in this case)
