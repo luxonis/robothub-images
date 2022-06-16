@@ -329,9 +329,10 @@ class Device:
         if source.resolution != input_size or roi is not None:
             manip_nn = self.pipeline.createImageManip()
             manip_nn.setKeepAspectRatio(not full_fov)
-            manip_nn.initialConfig.setResize(*input_size)
             # The NN model expects BGR input. By default, ImageManip output type would be same as input (gray in this case)
-            if input_size is not None: manip_nn.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
+            if input_size is not None: 
+                 manip_nn.initialConfig.setResize(*input_size)
+                 manip_nn.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
             # Set crop if set
             if roi is not None: manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
