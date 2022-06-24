@@ -6,6 +6,7 @@ import time
 import warnings
 import traceback
 from contextlib import ExitStack
+from datetime import timedelta
 from functools import partial
 from pathlib import Path
 from threading import Thread
@@ -20,8 +21,10 @@ from .detection import Detection
 from .device import Device
 from .error import RobotHubFatalException
 from .storage import store_data
-from .stream import Stream, StreamType
+from .stream import StreamType
 from . import json
+
+STREAM_STUCK_TIMEOUT = timedelta(seconds=60).total_seconds()
 
 
 class App:
@@ -135,7 +138,7 @@ class App:
                 self._comm.send_error(f"Application cannot start: {e}")
                 self.stop()
                 print(e, "Application cannot start")
-            except GeneratorExit:
+            except (GeneratorExit, SystemExit):
                 raise
             except BaseException as e:
                 traceback.print_exc()
@@ -292,16 +295,19 @@ class App:
             last_run = 0
             while self.running:
                 had_items = False
+                now = time.monotonic()
                 for device in self.devices:
+                    print(f"Running {device.internal.isPipelineRunning()}, closed {device.internal.isClosed()}")
+                    last_item = 0
                     for stream in device.streams.outputs():
+                        last_item = max(last_item, stream.last_timestamp)
                         if stream.last_timestamp > last_run:
                             had_items = True
-                            break
-                    else:
-                        continue
-                    break
+                    if last_item > 0 and now - last_item > STREAM_STUCK_TIMEOUT:
+                        # NOTE(michal) temporary measure before we figure out how to fix this
+                        raise RuntimeError(f"Device {device.id} / {device.name} stuck. Last message received {now - last_item}s ago.")
 
                 if had_items:
                     self.on_update()
-                last_run = time.monotonic()
+                last_run = now
                 yield had_items
