@@ -297,7 +297,6 @@ class App:
                 had_items = False
                 now = time.monotonic()
                 for device in self.devices:
-                    print(f"Running {device.internal.isPipelineRunning()}, closed {device.internal.isClosed()}")
                     last_item = 0
                     for stream in device.streams.outputs():
                         last_item = max(last_item, stream.last_timestamp)
