@@ -1,16 +1,28 @@
 class Config:
+    _initialized = False
+
     _raw_configuration: dict
     _defaults: dict
 
     def __init__(self):
         self._raw_configuration = {}
         self._defaults = {}
+        self._initialized = True
 
     def __getattr__(self, key):
-        try:
-            return self._raw_configuration[key]
-        except KeyError:
-            return self._defaults.get(key)
+        if self._initialized and key not in self.__dict__:
+            try:
+                return self._raw_configuration[key]
+            except KeyError:
+                return self._defaults.get(key)
+        else:
+            return self.__dict__[key]
+
+    def __setattr__(self, key, value):
+        if self._initialized and key not in self.__dict__:
+            self._raw_configuration[key] = value
+        else:
+            self.__dict__[key] = value
 
     def values(self):
         return {**self._defaults, **self._raw_configuration}
