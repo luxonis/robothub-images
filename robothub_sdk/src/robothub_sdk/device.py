@@ -276,7 +276,8 @@ class Device:
         full_fov=True,
         confidence: float = None,
         metadata: dict = None,
-        roi: Tuple[float, float, float, float] = None
+        roi: Tuple[float, float, float, float] = None,
+        color_order: Literal["RGB", "BGR"] = "BGR"
     ) -> Tuple[SupportedNeuralNetworks, Stream, Stream]:
         assert source.output_node is not None
         assert source.type == StreamType.FRAME
@@ -332,7 +333,10 @@ class Device:
             # The NN model expects BGR input. By default, ImageManip output type would be same as input (gray in this case)
             if input_size is not None: 
                  manip_nn.initialConfig.setResize(*input_size)
-                 manip_nn.initialConfig.setFrameType(dai.RawImgFrame.Type.BGR888p)
+                 frame_type = dai.RawImgFrame.Type.BGR888p if color_order == "BGR" else dai.RawImgFrame.Type.RGB888p
+                 manip_nn.initialConfig.setFrameType(frame_type)
+                 manip_nn.setMaxOutputFrameSize(input_size[0] * input_size[1] * 3) # assume 3 channels UINT8 images
+
             # Set crop if set
             if roi is not None: manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
