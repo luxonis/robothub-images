@@ -114,18 +114,12 @@ class HelloWorld(App):
         self.next_window_position = (0, self.next_window_position[1] + 500)
 
     def on_still_frame(self, device_id: str, frame: dai.ImgFrame):
-        if IS_INTERACTIVE:
-            cv2.imshow(f"{device_id} Still Picture", frame.getCvFrame())
-        else:
-            print("Sending detection...")
-            self.send_detection(
-                f"Still frame from device {device_id}",
-                tags=["periodic", "still"],
-                frames=[(frame, "jpeg")],
-            )
-
-    def on_frame(self, stream_id: str, frame: dai.ImgFrame):
-        cv2.imshow(stream_id, frame.getCvFrame())
+        print("Sending detection...")
+        self.send_detection(
+            f"Still frame from device {device_id}",
+            tags=["periodic", "still"],
+            frames=[(frame, "jpeg")],
+        )
 
     def on_update(self):
         if IS_INTERACTIVE:
