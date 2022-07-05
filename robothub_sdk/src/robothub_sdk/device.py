@@ -98,6 +98,16 @@ class SynchronizedStream:
                     self.callback(*args)
 
 
+class DeviceConfiguration:
+    name: str
+
+    def __init__(self, name: Optional[str] = None):
+        self.name = name or "<unknown>"
+
+    def __repr__(self):
+        return f"<DeviceConfiguration name={self.name!r}>"
+
+
 class Device:
     class Streams:
         device: Device
@@ -244,9 +254,14 @@ class Device:
     nodes: Nodes
     streams: Streams
 
-    def __init__(self, device_id: str, device_info: dai.DeviceInfo, device: dai.Device):
+    configuration: DeviceConfiguration
+
+    @property
+    def name(self):
+        return self.configuration.name
+
+    def __init__(self, device_id: str, device_info: dai.DeviceInfo, device: dai.Device, configuration: Optional[DeviceConfiguration] = None):
         self.id = device_id
-        self.name = self.id  # TODO!!
         self.device_info = device_info
         self.calibration = device.readCalibration()
         self.eeprom = self.calibration.getEepromData()
@@ -263,6 +278,7 @@ class Device:
         self.nodes = Device.Nodes()
         self.streams = Device.Streams(self)
         self.streams.statistics.publish()
+        self.configuration = configuration if configuration is not None else DeviceConfiguration(name=device_id)
 
     def create_nn(
         self,
@@ -405,7 +421,7 @@ class Device:
             self.nodes.color_camera = cam_rgb
 
             depthai_res = res.for_socket(camera)
-            print(f'setting {camera} resolution to {depthai_res}')
+            print(f"setting {camera} resolution to {depthai_res}")
             cam_rgb.setResolution(depthai_res)
             if isp_scale is not None:
                 cam_rgb.setIspScale(*isp_scale)
@@ -456,6 +472,7 @@ class Device:
     >>> IP Address: {ip_address}
     >>> BoardName: {self.eeprom.boardName}
     >>> BoardRev: {self.eeprom.boardRev}
+    >>> Configuration: {self.configuration}
         """.strip(
             "\r\n"
         )

@@ -18,7 +18,7 @@ from .client import AgentClient
 from .config import Config
 from .constants import IS_INTERACTIVE, CONFIG_FILE
 from .detection import Detection
-from .device import Device
+from .device import Device, DeviceConfiguration
 from .error import RobotHubFatalException
 from .storage import store_data
 from .stream import StreamType
@@ -42,6 +42,7 @@ class App:
     _loop_thread: Thread
     _run_without_devices: bool
     _comm: AgentClient
+    _device_configuration: Dict[str, DeviceConfiguration]
     _min_update_rate: int
     _config_path: Path
     _running: Optional[Generator[bool, None, None]]
@@ -61,6 +62,19 @@ class App:
     def on_update(self):
         pass
 
+    @property
+    def device_configuration(self):
+        return self._device_configuration
+
+    @device_configuration.setter
+    def device_configuration(self, value: Dict[str, DeviceConfiguration]):
+        self._device_configuration = value
+        print("Device configuration updated", value)
+        for device in self.devices:
+            configuration = value.get(device.id, None)
+            if configuration is not None:
+                device.configuration = configuration
+
     def __init__(self, config_path: Path = Path(CONFIG_FILE), run_without_devices: bool = False, app_id: str = None):
         self.running = False
         self.fail_counter = 0
@@ -79,6 +93,7 @@ class App:
 
         self._running = None
         self._comm = AgentClient(self)
+        self._device_configuration = {}
         self._min_update_rate = 1
         self._config_path = config_path.resolve().absolute()
         self._run_without_devices = run_without_devices
@@ -251,7 +266,8 @@ class App:
             for device_info in devices:
                 dai_device: dai.Device = stack.enter_context(dai.Device(openvino_version, device_info, usb2_mode))
                 device_id = dai_device.getMxId()
-                device = Device(device_id, device_info, dai_device)
+                configuration = self._device_configuration.get(device_id, None)
+                device = Device(device_id, device_info, dai_device, configuration)
 
                 print(f"=== Connected to: {device_id}")
                 print(str(device))

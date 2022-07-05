@@ -4,7 +4,7 @@ import urllib.request
 import base64
 import asyncio
 from pathlib import Path
-from typing import Dict, TYPE_CHECKING, TypedDict, List
+from typing import Dict, TYPE_CHECKING, TypedDict, List, Optional
 from urllib.error import URLError, HTTPError
 
 import depthai as dai
@@ -13,7 +13,7 @@ from paho.mqtt.client import MQTTMessage
 
 from .constants import IS_INTERACTIVE, BROKER_SOCKET, STORAGE_DIR
 from .detection import Detection
-from .device import Device
+from .device import Device, DeviceConfiguration
 from .error import RobotHubFatalException, RobotHubConnectionException, RobotHubPublishException
 from .router import router
 from .rest import Request, Response
@@ -37,7 +37,7 @@ class AgentClient:
     app_id: str
     app: App
     #: paho_socket.Client: Contains device identifiers on which the application can be executed
-    client = None
+    client: Optional[mqtt_client.Client]
     _requests: asyncio.Queue
     _video_streams: Dict[str, PublishedStream]
     _reported_devices: List[ReportedDevice]
@@ -72,6 +72,7 @@ class AgentClient:
         self._requests = asyncio.Queue()
         self._video_streams = {}
         self._reported_devices = []
+        self.client = None
         if broker_path:
             self._connect(broker_path)
 
@@ -106,6 +107,7 @@ class AgentClient:
         self.report_online()
 
         self.client.subscribe(f"{self.app_id}/#", 0)
+        self.client.subscribe("configuration/devices", 0)
 
     def _on_disconnect(self, unused_client, unused_userdata, result):
         print(f"Disconnected from MQTT Broker with result code {result}")
@@ -131,6 +133,20 @@ class AgentClient:
                     self._video_streams[stream].disable()
         elif msg.topic == f"{self.app_id}/request":
             self.app.loop.call_soon_threadsafe(self._requests.put_nowait, msg)
+        elif msg.topic == "configuration/devices":
+            configurations = json.loads(msg.payload.decode("utf-8"))
+            device_configuration: Dict[str, DeviceConfiguration] = {}
+            for configuration in configurations:
+                if not isinstance(configuration, dict):
+                    continue
+                device_id = configuration.get("id", None)
+                device_name = configuration.get("name", None)
+
+                if not device_id or not device_name:
+                    continue
+
+                device_configuration[device_id] = DeviceConfiguration(name=device_name)
+            self.app.device_configuration = device_configuration
         else:
             data = msg.payload.decode("utf-8")
             print(f"Received unhandled topic `{msg.topic}` with `{data}`")
