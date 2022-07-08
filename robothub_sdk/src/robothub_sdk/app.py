@@ -10,7 +10,7 @@ from datetime import timedelta
 from functools import partial
 from pathlib import Path
 from threading import Thread
-from typing import List, Tuple, Generator, Optional, Any, Literal, Dict
+from typing import List, Tuple, Generator, Optional, Any, Literal, Dict, Union
 import depthai as dai
 import asyncio
 
@@ -106,9 +106,11 @@ class App:
         signal.signal(signal.SIGINT, signal.default_int_handler)
         self.stop()
 
-    def send_detection(self, title: str, tags: List[str] = None, data: Any = None, frames: List[Tuple[dai.ImgFrame, Literal["jpeg", "raw"]]] = None) -> None:
-        if IS_INTERACTIVE:
-            return
+    def send_detection(
+        self, title: str, tags: List[str] = None, data: Any = None, frames: List[Tuple[dai.ImgFrame, Literal["jpeg", "raw"]]] = None, video: Union[bytes, memoryview] = None
+    ) -> None:
+        # if IS_INTERACTIVE:
+        #     return
 
         saved_frames = []
         if frames is not None and len(frames) > 0:
@@ -116,7 +118,11 @@ class App:
                 filename = store_data(img_frame.getData().tobytes(), suffix)
                 saved_frames.append(filename)
 
-        detection = Detection(title, tags, data=data, frames=saved_frames)
+        saved_video = None
+        if video is not None:
+            saved_video = store_data(video, "mp4")
+
+        detection = Detection(title, tags, data=data, frames=saved_frames, video=saved_video)
         self._comm.send_detection(detection)
 
     def restart(self):
