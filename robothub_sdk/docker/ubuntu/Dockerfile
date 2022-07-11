@@ -42,7 +42,7 @@ RUN pip3 install -U paho-mqtt paho_socket http_router
 FROM base as stage
 
 COPY --from=build /opt/depthai /lib
-COPY --from=build /usr/local/lib/python3.8 /usr/local/lib/python3.8
+COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear Python compiled artifacts
 RUN find /usr -depth \
