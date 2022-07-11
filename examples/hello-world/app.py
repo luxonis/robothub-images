@@ -29,9 +29,7 @@ class HelloWorld(App):
     def on_initialize(self, unused_devices: List[dai.DeviceInfo]):
         self.next_window_position = (0, 30)
         self.camera_controls = []
-        self.config.add_defaults(
-            send_still_picture=False, send_still_picture_interval=DETECTION_INTERVAL
-        )
+        self.config.add_defaults(send_still_picture=False, send_still_picture_interval=DETECTION_INTERVAL)
         self.next_detection = 0
 
     def on_configuration(self, old_configuration: Config):
@@ -39,14 +37,8 @@ class HelloWorld(App):
         if not self.config.send_still_picture:
             self.next_detection = 0
 
-        if (
-            self.config.send_still_picture
-            and self.config.send_still_picture_interval
-            != old_configuration.send_still_picture_interval
-        ):
-            self.next_detection = (
-                time.monotonic() + self.config.send_still_picture_interval
-            )
+        if self.config.send_still_picture and self.config.send_still_picture_interval != old_configuration.send_still_picture_interval:
+            self.next_detection = time.monotonic() + self.config.send_still_picture_interval
 
     def on_setup(self, device):
         fps = 25
@@ -56,20 +48,14 @@ class HelloWorld(App):
             stream_id = f"{device.id}-{camera.name}"
 
             if camera == dai.CameraBoardSocket.RGB:
-                device.configure_camera(
-                    camera, res=res, fps=fps, preview_size=(640, 480)
-                )
+                device.configure_camera(camera, res=res, fps=fps, preview_size=(640, 480))
                 self.camera_controls.append(device.streams.color_control)
 
                 if IS_INTERACTIVE:
                     device.streams.color_still.consume()
-                    device.streams.color_still.description = (
-                        f"{device.name} {device.streams.color_still.description}"
-                    )
+                    device.streams.color_still.description = f"{device.name} {device.streams.color_still.description}"
                     device.streams.color_preview.consume()
-                    stream_id = device.streams.color_preview.description = (
-                        f"{device.name} {device.streams.color_preview.description}"
-                    )
+                    stream_id = device.streams.color_preview.description = f"{device.name} {device.streams.color_preview.description}"
                 else:
                     encoder = device.create_encoder(
                         device.streams.color_still.output_node,
@@ -88,18 +74,14 @@ class HelloWorld(App):
                 device.configure_camera(camera, res=res, fps=fps)
                 if IS_INTERACTIVE:
                     device.streams.mono_left_video.consume()
-                    stream_id = device.streams.mono_left_video.description = (
-                        f"{device.name} {device.streams.mono_left_video.description}"
-                    )
+                    stream_id = device.streams.mono_left_video.description = f"{device.name} {device.streams.mono_left_video.description}"
                 else:
                     device.streams.mono_left_video.publish()
             elif camera == dai.CameraBoardSocket.RIGHT:
                 device.configure_camera(camera, res=res, fps=fps)
                 if IS_INTERACTIVE:
                     device.streams.mono_right_video.consume()
-                    stream_id = device.streams.mono_right_video.description = (
-                        f"{device.name} {device.streams.mono_right_video.description}"
-                    )
+                    stream_id = device.streams.mono_right_video.description = f"{device.name} {device.streams.mono_right_video.description}"
                 else:
                     device.streams.mono_right_video.publish()
 
@@ -128,29 +110,21 @@ class HelloWorld(App):
                     if camera == dai.CameraBoardSocket.RGB:
                         cv2.imshow(
                             device.streams.color_still.description,
-                            device.streams.color_still.last_value.getCvFrame()
-                            if device.streams.color_still.last_value is not None
-                            else np.empty([1, 1]),
+                            device.streams.color_still.last_value.getCvFrame() if device.streams.color_still.last_value is not None else np.empty([1, 1]),
                         )
                         cv2.imshow(
                             device.streams.color_preview.description,
-                            device.streams.color_preview.last_value.getCvFrame()
-                            if device.streams.color_preview.last_value is not None
-                            else np.empty([1, 1]),
+                            device.streams.color_preview.last_value.getCvFrame() if device.streams.color_preview.last_value is not None else np.empty([1, 1]),
                         )
                     elif camera == dai.CameraBoardSocket.LEFT:
                         cv2.imshow(
                             device.streams.mono_left_video.description,
-                            device.streams.mono_left_video.last_value.getCvFrame()
-                            if device.streams.mono_left_video.last_value is not None
-                            else np.empty([1, 1]),
+                            device.streams.mono_left_video.last_value.getCvFrame() if device.streams.mono_left_video.last_value is not None else np.empty([1, 1]),
                         )
                     elif camera == dai.CameraBoardSocket.RIGHT:
                         cv2.imshow(
                             device.streams.mono_right_video.description,
-                            device.streams.mono_right_video.last_value.getCvFrame()
-                            if device.streams.mono_right_video.last_value is not None
-                            else np.empty([1, 1]),
+                            device.streams.mono_right_video.last_value.getCvFrame() if device.streams.mono_right_video.last_value is not None else np.empty([1, 1]),
                         )
 
         if self.config.send_still_picture and self.next_detection < time.monotonic():
@@ -158,9 +132,7 @@ class HelloWorld(App):
                 ctl = dai.CameraControl()
                 ctl.setCaptureStill(True)
                 camera_control.send(ctl)
-            self.next_detection = (
-                time.monotonic() + self.config.send_still_picture_interval
-            )
+            self.next_detection = time.monotonic() + self.config.send_still_picture_interval
 
         if IS_INTERACTIVE:
             key = cv2.waitKey(1)

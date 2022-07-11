@@ -1,0 +1,22 @@
+version: '1.0.0' # required
+image: luxonis/basic-video-recorder # required
+name: RobotHub Basic Video Recorder # required
+description: Display camera outputs and send video detections. # required
+language: python # optional (visible in UI)
+url: https://github.com/luxonis/robothub-apps
+prerequisites: # The following is just an example, ignored by our server at the moment
+  stereoDepth: false # Optional - true -> only OAK-D cameras are allowed
+  chipset: ['myriad', 'keembay'] # Optional - allows filtering by generation
+  camera: ['OAK-D-Lite'] # Optional - allows filtering specific camera models
+configuration:
+  send_video:
+    label: 'Send video detections'
+    type: 'boolean'
+    default: false
+  send_video_interval:
+    label: 'Send video detections - Interval in seconds'
+    type: 'num-range'
+    step: 5
+    min: 60
+    max: 3600
+    default: 3600 # 1 hour
