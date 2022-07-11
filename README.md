@@ -23,8 +23,10 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 ```bash
     /bin/bash -c "$(curl -fsSL https://hub.luxonis.com/cli)"
 ```
-3. Run the following command and log-in to RobotHub
+3. Run the following commands and log-in to RobotHub
 ```bash
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    robothub app setup-env
     robothub login
 ```
 4. Clone this repository
