@@ -8,6 +8,10 @@ on:
         description: 'DepthAI Git branch'
         required: true
         type: string
+
+  repository_dispatch:
+    types: [depthai-python-release]
+
   push:
     branches:
       - main
@@ -22,6 +26,7 @@ env:
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
   AWS_DEFAULT_REGION: us-east-1
   DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
+  EXTERNAL_TRIGGER_REF: ${{ github.event.client_payload.ref }}
 
 jobs:
   build:

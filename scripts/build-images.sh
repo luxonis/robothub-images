@@ -5,6 +5,10 @@ if [[ -z "${DEPTHAI_BRANCH}" ]]; then
   DEPTHAI_BRANCH="main"
 fi
 
+if [[ -n "${EXTERNAL_TRIGGER_REF}" ]]; then
+  DEPTHAI_BRANCH="${EXTERNAL_TRIGGER_REF##*/}"
+fi
+
 imageSuffix=""
 cacheSuffix="-buildcache"
 if [[ "$GITHUB_REF_NAME" != "main" ]]; then
