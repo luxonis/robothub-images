@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM alpine:3.15.4 as origin
+FROM alpine:3.16.0 as origin
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
@@ -51,7 +51,7 @@ RUN find /usr -depth \
 RUN rm -rf /var/cache && mkdir -p /var/cache
 
 COPY --from=build /opt/depthai /lib
-COPY --from=build /usr/lib/python3.9 /usr/lib/python3.9
+COPY --from=build /usr/lib/python3.10 /usr/lib/python3.10
 
 FROM origin
 
