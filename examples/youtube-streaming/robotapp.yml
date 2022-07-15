@@ -5,11 +5,11 @@ version: 1.0.1
 language: python
 description: >-
   Application for streaming the video from OAK devices to YouTube.
-  Suggested workflow:
-  	1. Obtain your YouTube stream key (note that it takes 24 hours if you do not have one yet).
-  	2. Paste the stream key into field `YouTube Stream Key` in Configuration part of this App.
-  	3. Select desired streaming mode (also in Configuarion part).
-  	4. Save the configuration and watch the stream.
+  # Suggested workflow:
+  	# 1. Obtain your YouTube stream key (note that it takes 24 hours if you do not have one yet).
+  	# 2. Paste the stream key into field `YouTube Stream Key` in Configuration part of this App.
+  	# 3. Select desired streaming mode (also in Configuarion part).
+  	# 4. Save the configuration and watch the stream.
 
 configuration:
   streaming_key:
