@@ -37,4 +37,3 @@ configuration:
 
     description: >-
       Definition if the exact camera socket, resolution and fps used for the streaming.
-
