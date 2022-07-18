@@ -1,6 +1,9 @@
 #!/bin/bash
 set -Eeuo pipefail
 
+# NOTE(michal): Change this if you want to temporarily change main branch for an unreleased version
+DEPTHAI_MAIN_BRANCH="power_cycle_stuck_fix"
+
 if [[ -z "${DEPTHAI_BRANCH}" ]]; then
   DEPTHAI_BRANCH="main"
 fi
@@ -31,6 +34,10 @@ UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}${
 UBUNTU_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-${DEPTHAI_BRANCH}${cacheSuffix}"
 LATEST_TAG="ghcr.io/luxonis/robothub-base-app:latest"
 
+if [[ "${DEPTHAI_BRANCH}" == "main" ]]; then
+  DEPTHAI_BRANCH="${DEPTHAI_MAIN_BRANCH}"
+fi
+
 echo "================================"
 echo "Building images..."
 echo "DEPTHAI_BRANCH=${DEPTHAI_BRANCH}"
@@ -55,7 +62,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/alpine/Dockerfile \
   ./robothub_sdk
 
-if [[ "${DEPTHAI_BRANCH}" == "main" && "${GITHUB_REF_NAME}" == "main" ]]; then
+if [[ "${DEPTHAI_BRANCH}" == "${DEPTHAI_MAIN_BRANCH}" && "${GITHUB_REF_NAME}" == "main" ]]; then
   echo "================================"
   echo "Pushing as latest"
   echo "=> ${LATEST_TAG}"
