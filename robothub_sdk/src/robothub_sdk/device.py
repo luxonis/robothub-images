@@ -358,7 +358,6 @@ class Device:
             if roi is not None:
                 # If full_fov = True we do not want to keep aspect ratio
                 manip_nn.setKeepAspectRatio(not full_fov)
-                manip_nn.setKeepAspectRatio(True)
                 manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
             manip_nn.out.link(nn.input)
