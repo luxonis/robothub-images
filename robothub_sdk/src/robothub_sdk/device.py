@@ -356,7 +356,8 @@ class Device:
 
             # Set crop if set
             if roi is not None:
-                # Setting to True prevents "Processing failed, potentially unsupported config" error
+                # If full_fov = True we do not want to keep aspect ratio
+                manip_nn.setKeepAspectRatio(not full_fov)
                 manip_nn.setKeepAspectRatio(True)
                 manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
