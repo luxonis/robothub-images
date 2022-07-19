@@ -1,7 +1,7 @@
 ARG FROM_IMAGE_TAG
 FROM ${FROM_IMAGE_TAG}
 
-RUN set -eux & apk add --no-cache nodejs npm alpine-sdk bash libstdc++ libc6-compat
+RUN set -eux & apt-get update && apt-get install nodejs npm bash build-essential
 RUN npm config set python python3
 
 RUN npm install -g code-server
