@@ -3,9 +3,9 @@ FROM ${FROM_IMAGE_TAG}
 
 RUN set -eux & apt-get update && apt-get install nodejs npm bash build-essential
 RUN npm config set python python3
-RUN npm install -g node-addon-api
+RUN npm install -g npm node-addon-api node-pre-gyp rebuild
 
-RUN npm install -g code-server
+RUN npm install -g code-server@4.5.1
 ADD docker/vscode.config /vscode.config
 RUN mkdir -p /data/vscode/extensions
 
