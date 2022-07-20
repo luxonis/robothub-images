@@ -3,6 +3,7 @@ FROM ${FROM_IMAGE_TAG}
 
 RUN set -eux & apk add --no-cache nodejs npm alpine-sdk bash libstdc++ libc6-compat
 RUN npm config set python python3
+RUN npm install -g node-addon-api
 
 RUN npm install -g code-server
 ADD docker/vscode.config /vscode.config
