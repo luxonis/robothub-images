@@ -1,11 +1,21 @@
 ARG FROM_IMAGE_TAG
 FROM ${FROM_IMAGE_TAG}
 
-RUN set -eux & apt-get update && apt-get install nodejs npm bash build-essential
-RUN npm config set python python3
-RUN npm install -g npm node-addon-api @mapbox/node-pre-gyp rebuild
+RUN set -eux & apt-get update && apt-get install curl build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3
 
-RUN npm install -g code-server@4.5.1
+ARG NODE_VERSION=16.16.0
+# node install
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+
+RUN npm config set python python3
+RUN npm install -g yarn
+
+RUN yarn global add code-server@4.5.1
 ADD docker/vscode.config /vscode.config
 RUN mkdir -p /data/vscode/extensions
 
