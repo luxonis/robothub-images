@@ -3,7 +3,7 @@ FROM ${FROM_IMAGE_TAG}
 
 RUN set -eux & apk add --no-cache nodejs npm alpine-sdk bash libstdc++ libc6-compat
 RUN npm config set python python3
-RUN npm install -g npm node-addon-api node-pre-gyp rebuild
+RUN npm install -g npm node-addon-api @mapbox/node-pre-gyp rebuild
 
 RUN npm install -g code-server@4.5.1
 ADD docker/vscode.config /vscode.config
