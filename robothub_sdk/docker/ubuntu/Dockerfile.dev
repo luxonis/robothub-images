@@ -17,6 +17,10 @@ RUN npm install -g yarn
 
 RUN yarn global add code-server@4.5.1
 ADD docker/vscode.config /vscode.config
+
+ADD docker/launch-vscode.sh /usr/local/bin/launch-vscode.sh
+RUN chmod +x /usr/local/bin/launch-vscode.sh
+
 RUN mkdir -p /data/vscode/extensions
 
 RUN code-server --extensions-dir /data/vscode/extensions --install-extension redhat.vscode-yaml
@@ -27,4 +31,4 @@ VOLUME /app
 
 ENV CODE_SERVER_BIND_ADDR=0.0.0.0:9999
 
-CMD ["code-server", "--config", "/vscode.config", "--bind-addr", "\"${CODE_SERVER_BIND_ADDR}\"", "/app"]
+CMD ["launch-vscode.sh"]
