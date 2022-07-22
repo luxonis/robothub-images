@@ -99,11 +99,13 @@ class App:
         self._run_without_devices = run_without_devices
 
         atexit.register(self._process_exit)
-        signal.signal(signal.SIGINT, self._signal_handler)
+        for sig_no in (signal.SIGTERM, signal.SIGINT, signal.SIGQUIT):
+            signal.signal(sig_no, self._signal_handler)
 
-    def __del__(self):
-        atexit.unregister(self._process_exit)
-        signal.signal(signal.SIGINT, signal.default_int_handler)
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
     def send_detection(
@@ -138,6 +140,11 @@ class App:
             device.internal.close()
 
     def stop(self):
+        atexit.unregister(self._process_exit)
+        signal.signal(signal.SIGINT, signal.default_int_handler)
+        signal.signal(signal.SIGTERM, signal.SIG_DFL)
+        signal.signal(signal.SIGQUIT, signal.SIG_DFL)
+
         self.running = False
         self.loop.stop()
         self._loop_thread.join(timeout=3)
