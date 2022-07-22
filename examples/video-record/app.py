@@ -3,6 +3,7 @@ from collections import deque
 from fractions import Fraction
 from typing import List, Deque, Tuple, Literal
 import time
+import gc
 from datetime import timedelta
 
 import depthai as dai
@@ -51,6 +52,9 @@ def save_video(video_loop, fps: int, video_format: Literal["mjpeg", "h264", "h26
                 packet.pts = i * frame_time
                 packet.stream = output_stream
                 output_container.mux_one(packet)
+
+    # NOTE(michal): Forcing GC collect here to trim memory footprint after saving the video
+    gc.collect()
     return mp4_file.getvalue()
 
 
@@ -68,7 +72,7 @@ class VideoRecord(App):
             send_video=False,
             send_video_interval=DETECTION_INTERVAL,
             video_fps=30,
-            video_format="h264",
+            video_format="mjpeg",
             video_retention_seconds=90,
         )
         self.next_detection = 0
@@ -134,6 +138,7 @@ class VideoRecord(App):
             for device, video_loop in self.cameras:
                 if len(video_loop) == 0:
                     continue
+                print(len(video_loop))
                 self.send_detection(f"Video from device {device.name}", video=save_video(video_loop, self.config.video_fps, self.config.video_format))
 
             self.next_detection = time.monotonic() + self.config.send_video_interval
