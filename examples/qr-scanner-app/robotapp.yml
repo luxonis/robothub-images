@@ -1,0 +1,24 @@
+version: "1.0.10"
+image: luxonis/dev-qr-scanner-robothub
+name: DEVQRScannerRobotHub
+description: Run qr scanner model 
+url: https://github.com/luxonis/depthai
+configuration:
+  detect_threshold:
+    label: 'Detect threshold'
+    type: 'num-range'
+    step: 0.05
+    min: 0
+    max: 1
+    default: 0.6
+  send_still_picture_state_changed_interval:
+    label: "Send still picture if the QR code wasn't detected in the last seconds"
+    type: 'num-range'
+    step: 5
+    min: 10
+    max: 1200
+    default: 10
+  classes:
+    label: 'Classes (comma separated IDs)'
+    type: 'text'
+    default: '67'

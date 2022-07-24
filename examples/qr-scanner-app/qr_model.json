@@ -1,0 +1,17 @@
+{
+    "nn_config":
+    {
+        "output_format" : "detection",
+        "NN_family" : "mobilenet",
+        "confidence_threshold" : 0.3,
+        "input_size": "384x384"
+    },
+    "mappings":
+    {
+        "labels":
+        [
+            "unknown",
+            "qr_code"
+        ]
+    }
+}
