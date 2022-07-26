@@ -48,10 +48,10 @@ def correct_bb(bb, roi=None):
     if roi is not None:
         xdelta = roi[2]-roi[0]
         ydelta = roi[3]-roi[1]
-        det.xmin = roi[0] + xdelta*det.xmin
-        det.xmax = roi[0] + xdelta*det.xmax
-        det.ymin = roi[1] + ydelta*det.ymin
-        det.ymax = roi[1] + ydelta*det.ymax
+        bb.xmin = roi[0] + xdelta*bb.xmin
+        bb.xmax = roi[0] + xdelta*bb.xmax
+        bb.ymin = roi[1] + ydelta*bb.ymin
+        bb.ymax = roi[1] + ydelta*bb.ymax
     # Check for overflow
     if bb.xmin < 0: bb.xmin = 0.001
     if bb.ymin < 0: bb.ymin = 0.001
