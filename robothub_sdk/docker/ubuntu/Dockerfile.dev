@@ -15,6 +15,9 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 RUN npm config set python python3
 RUN npm install -g yarn
 
+RUN wget https://github.com/cloudflare/cloudflared/releases/download/2022.7.1/cloudflared-linux-${BUILDARCH}.deb -P /root \
+  && dpkg -i /root/cloudflared-linux-${BUILDARCH}.deb
+
 RUN yarn global add code-server@4.5.1
 ADD docker/vscode.config /vscode.config
 
