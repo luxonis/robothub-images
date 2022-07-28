@@ -1,5 +1,6 @@
 ARG FROM_IMAGE_TAG
 FROM ${FROM_IMAGE_TAG}
+ARG TARGETARCH
 
 RUN set -eux & apk add --no-cache curl nodejs npm alpine-sdk bash libstdc++ libc6-compat
 
