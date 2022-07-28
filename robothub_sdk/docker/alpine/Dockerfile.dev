@@ -6,7 +6,7 @@ RUN set -eux & apk add --no-cache curl nodejs npm alpine-sdk bash libstdc++ libc
 RUN npm config set python python3
 RUN npm install -g yarn
 
-RUN wget https://github.com/cloudflare/cloudflared/releases/download/2022.7.1/cloudflared-linux-${BUILDARCH} -P /usr/local/bin
+RUN wget https://github.com/cloudflare/cloudflared/releases/download/2022.7.1/cloudflared-linux-${TARGETARCH} -P /usr/local/bin
 
 RUN yarn global add code-server@4.5.1
 ADD docker/vscode.config /vscode.config
