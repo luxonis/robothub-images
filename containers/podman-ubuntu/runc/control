@@ -1,0 +1,10 @@
+Package: runc
+Version: $RUNC_VERSION-1
+Section: base
+Priority: optional
+Architecture: $PACKAGE_ARCH
+Depends: libseccomp-dev
+Maintainer: Filip Prochazka <filip@luxonis.com>
+Description: a CLI tool for spawning and running containers
+  on Linux according to the OCI specification.
+
