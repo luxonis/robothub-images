@@ -26,4 +26,13 @@ RUN apt update && apt-get install -y\
   && mkdir /build
 
 COPY ./podman/* /build/
+RUN chmod +x /build/build.sh && mkdir /packages
 WORKDIR /build
+
+ARG PODMAN_VERSION
+RUN ./build.sh
+
+FROM scratch
+
+WORKDIR /
+COPY --from=builder /packages/* /

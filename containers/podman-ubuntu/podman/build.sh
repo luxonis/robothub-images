@@ -1,12 +1,15 @@
 #!/bin/sh
 
+set -eux
+
+export PACKAGE_ARCH="$(dpkg --print-architecture)"
+
 PKG_ROOT="$(pwd)/podman_${PODMAN_VERSION}-1"
 
 mkdir -p "${PKG_ROOT}/usr/local/bin"
 
-git clone https://github.com/containers/podman/
+git clone --depth 1 --branch "v${PODMAN_VERSION}" https://github.com/containers/podman/
 cd podman
-git checkout "v${PODMAN_VERSION}"
 make BUILDTAGS="seccomp apparmor systemd"
 make DESTDIR=$PKG_ROOT install
 cd ..

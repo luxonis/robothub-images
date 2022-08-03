@@ -7,4 +7,13 @@ RUN apt update && apt-get install -y \
   dpkg-dev && rm -rf /var/lib/apt/lists/* \
   && mkdir /build
 COPY ./cni-plugins/* /build/
+RUN chmod +x /build/build.sh && mkdir /packages
 WORKDIR /build
+
+ARG CNI_PLUGINS_VERSION
+RUN ./build.sh
+
+FROM scratch
+
+WORKDIR /
+COPY --from=builder /packages/* /

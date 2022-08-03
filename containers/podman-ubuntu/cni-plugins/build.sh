@@ -1,12 +1,15 @@
 #!/bin/sh
 
+set -eux
+
+export PACKAGE_ARCH="$(dpkg --print-architecture)"
+
 PKG_ROOT="$(pwd)/cni-plugins_${CNI_PLUGINS_VERSION}-1"
 
 mkdir -p "${PKG_ROOT}/usr/local/libexec/cni"
 
-git clone https://github.com/containernetworking/plugins.git
+git clone --depth 1 --branch "v${CNI_PLUGINS_VERSION}" https://github.com/containernetworking/plugins.git
 cd plugins
-git checkout "v${CNI_PLUGINS_VERSION}"
 
 ./build_linux.sh
 cp ./bin/* "${PKG_ROOT}/usr/local/libexec/cni/"
