@@ -8,8 +8,8 @@ RUNC_VERSION="1.1.1"
 PODMAN_VERSION="v4.1.1"
 
 mkdir ./packages
-mkdir ./packages/amd64
-mkdir ./packages/arm64
+
+mkdir ./packages/conmon
 
 DOCKER_BUILDKIT=1 docker buildx build \
   --builder remotebuilder \
