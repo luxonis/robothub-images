@@ -11,6 +11,12 @@ on:
       - 'containers/podman-ubuntu/**/*'
 
 env:
+  GO_LANG_VERSION: '1.17'
+  CONMON_VERSION: '2.1.0'
+  CNI_PLUGINS_VERSION: '1.1.1'
+  RUNC_VERSION: '1.1.1'
+  PODMAN_VERSION: '4.1.1'
+
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
@@ -57,6 +63,22 @@ jobs:
         with:
           name: packages
           path: containers/podman-ubuntu/packages
+      - 
+        name: Upload release
+        uses: ncipollo/release-action@v1
+        with:
+          name: 'Podman v${{ env.PODMAN_VERSION }} for Ubuntu'
+          body: |
+            podman v${{ env.PODMAN_VERSION }}
+
+            go lang v${{ env.GO_LANG_VERSION }}
+            conmon v${{ env.CONMON_VERSION }}
+            CNI plugins v${{ env.CNI_PLUGINS_VERSION }}
+            runc v${{ env.RUNC_VERSION }}
+          allowUpdates: true
+          replacesArtifacts: true
+          tag: 'podman/v${{ env.PODMAN_VERSION }}'
+          artifacts: "containers/podman-ubuntu/packages/**/*.deb"
       -
         name: Terminate instances
         if: ${{ always() && steps.launch_instances.outcome == 'success' }}

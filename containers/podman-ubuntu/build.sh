@@ -1,15 +1,7 @@
 #!/bin/bash
 set -ex
 
-GO_LANG_VERSION="1.17"
-
-CONMON_VERSION="2.1.0"
-CNI_PLUGINS_VERSION="1.1.1"
-RUNC_VERSION="1.1.1"
-PODMAN_VERSION="4.1.1"
-
 cd ./containers/podman-ubuntu
-
 
 mkdir -p ./packages/conmon
 
