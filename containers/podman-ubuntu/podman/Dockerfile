@@ -1,5 +1,5 @@
 ARG GO_LANG_VERSION
-FROM golang:${GO_LANG_VERSION}
+FROM golang:${GO_LANG_VERSION} AS builder
 
 RUN apt update && apt-get install -y\
   gettext-base\
