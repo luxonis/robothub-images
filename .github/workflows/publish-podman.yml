@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: packages
-          path: packages
+          path: containers/podman-ubuntu/packages
       -
         name: Terminate instances
         if: ${{ always() && steps.launch_instances.outcome == 'success' }}
