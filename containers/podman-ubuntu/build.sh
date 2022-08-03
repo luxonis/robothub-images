@@ -16,6 +16,7 @@ DOCKER_BUILDKIT=1 docker buildx build \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg GO_LANG_VERSION=${GO_LANG_VERSION} \
   --build-arg CONMON_VERSION=${CONMON_VERSION} \
+  --load \
   -t conmon-build \
   -f ./conmon/Dockerfile \
   .
