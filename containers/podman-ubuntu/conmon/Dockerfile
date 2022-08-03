@@ -18,6 +18,7 @@ COPY ./conmon/* /build/
 RUN chmod +x /build/build.sh && mkdir /packages
 WORKDIR /build
 
+ARG CONMON_VERSION
 RUN ./build.sh
 
 FROM scratch
