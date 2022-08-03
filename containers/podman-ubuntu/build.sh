@@ -16,15 +16,7 @@ DOCKER_BUILDKIT=1 docker buildx build \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg GO_LANG_VERSION=${GO_LANG_VERSION} \
   --build-arg CONMON_VERSION=${CONMON_VERSION} \
-  --load \
+  --output="type=local,dest=$(pwd)/packages/conmon" \
   -t conmon-build \
   -f ./conmon/Dockerfile \
   .
-
-docker container create --platform linux/arm64/v8 --name conmon-arm64 conmon-build
-docker cp conmon-arm64:/packages/* ./packages/arm64/
-docker container rm conmon-arm64
-
-docker container create --platform linux/amd64 --name conmon-amd64 conmon-build
-docker cp conmon-amd64:/packages/* ./packages/amd64/
-docker container rm conmon-amd64
