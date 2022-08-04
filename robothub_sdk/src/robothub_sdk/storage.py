@@ -4,8 +4,12 @@ from pathlib import Path
 from .constants import IS_INTERACTIVE, STORAGE_DIR
 
 
-def store_data(data: bytes, suffix: str) -> str:
-    filename = f"{str(uuid.uuid4())}.{suffix}"
+def store_data(data: bytes, suffix: str, customName: str = None) -> str:
+    name = customName
+    if name is None:
+        name = str(uuid.uuid4())
+
+    filename = f"{name}.{suffix}"
     if IS_INTERACTIVE:
         return filename
 

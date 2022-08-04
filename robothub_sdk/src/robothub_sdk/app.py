@@ -109,7 +109,7 @@ class App:
         self.stop()
 
     def send_detection(
-        self, title: str, tags: List[str] = None, data: Any = None, frames: List[Tuple[dai.ImgFrame, Literal["jpeg", "raw"]]] = None, video: Union[bytes, memoryview] = None, files: List[Tuple[Union[bytes, memoryview], str]] = None
+        self, title: str, tags: List[str] = None, data: Any = None, frames: List[Tuple[dai.ImgFrame, Literal["jpeg", "raw"]]] = None, video: Union[bytes, memoryview] = None, files: List[Tuple[Union[bytes, memoryview], str, str]] = None
     ) -> None:
         saved_frames = []
         if frames is not None and len(frames) > 0:
@@ -121,10 +121,10 @@ class App:
         if video is not None:
             saved_video = store_data(video, "mp4")
 
-        saved_files = None
+        saved_files = []
         if files is not None and len(files) > 0:
-            for (raw_bytes, suffix) in files:
-                filename = store_data(raw_bytes, suffix)
+            for (raw_bytes, name, suffix) in files:
+                filename = store_data(raw_bytes, suffix, name)
                 saved_files.append(filename)
 
         detection = Detection(title, tags, data=data, frames=saved_frames, video=saved_video, files=saved_files)
