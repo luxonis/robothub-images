@@ -10,17 +10,19 @@ class Detection:
     title: str
     frames: Optional[List[str]]
     video: Optional[str]
+    files: Optional[List[str]]
     tags: Optional[List[str]]
     data: Any
     created_at: datetime
 
-    def __init__(self, title: str, tags: List[str] = None, data=None, frames: List[str] = None, video: str = None, detection_id: uuid.UUID = None):
+    def __init__(self, title: str, tags: List[str] = None, data=None, frames: List[str] = None, video: str = None, files: List[str] = None, detection_id: uuid.UUID = None):
         self.id = detection_id or uuid.uuid4()
         self.title = title
         self.tags = tags
         self.data = data
         self.frames = frames
         self.video = video
+        self.files = files
         self.created_at = datetime.now()
 
     def get_payload(self) -> str:
@@ -33,6 +35,8 @@ class Detection:
             payload["frames"] = self.frames
         if self.video:
             payload["video"] = self.video
+        if self.files:
+            payload["files"] = self.files
 
         return json.dumps(payload)
 
