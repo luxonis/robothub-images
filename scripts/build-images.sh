@@ -113,13 +113,14 @@ DOCKER_BUILDKIT=1 docker buildx \
 
 echo "================================"
 echo "Building ubuntu (dev)..."
-echo "=> ${UBUNTU_TAG}"
+echo "=> ${UBUNTU_DEV_TAG}"
 echo "================================"
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
+  --build-arg FROM_IMAGE_TAG=${UBUNTU_TAG} \
   --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
   --cache-to type=registry,ref="${UBUNTU_CACHE_DEV_TAG}" \
   --cache-from type=registry,ref="${UBUNTU_CACHE_DEV_TAG}" \
