@@ -27,6 +27,7 @@ RUN tar xf libusb.tar.bz2 \
     && make -j$(nproc) \
     && make install
 
+RUN apk add python3-dev
 RUN cd depthai-python \
     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
     && cmake --build build --parallel $(nproc)

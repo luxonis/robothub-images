@@ -2,7 +2,7 @@ ARG FROM_IMAGE_TAG
 FROM ${FROM_IMAGE_TAG}
 ARG TARGETARCH
 
-RUN set -eux & apt-get update && apt-get install curl build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3
+RUN apt-get update && apt-get install curl build-essential g++ libx11-dev libxkbfile-dev libsecret-1-dev python-is-python3
 
 ARG NODE_VERSION=16.16.0
 # node install
