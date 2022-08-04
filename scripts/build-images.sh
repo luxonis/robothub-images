@@ -32,6 +32,10 @@ ALPINE_CACHE_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:alpine-${DEPTHAI_BRANCH}$
 
 UBUNTU_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
 UBUNTU_CACHE_TAG="ghcr.io/luxonis/robothub-base-app:ubuntu-${DEPTHAI_BRANCH}${cacheSuffix}"
+
+UBUNTU_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:ubuntu-depthai-${DEPTHAI_BRANCH}${imageSuffix}"
+UBUNTU_CACHE_DEV_TAG="ghcr.io/luxonis/robothub-dev-app:ubuntu-${DEPTHAI_BRANCH}${cacheSuffix}"
+
 LATEST_TAG="ghcr.io/luxonis/robothub-base-app:latest"
 
 if [[ "${DEPTHAI_BRANCH}" == "main" ]]; then
@@ -105,6 +109,23 @@ DOCKER_BUILDKIT=1 docker buildx \
   -t $UBUNTU_TAG \
   --push \
   --file ./robothub_sdk/docker/ubuntu/Dockerfile \
+  ./robothub_sdk
+
+echo "================================"
+echo "Building ubuntu (dev)..."
+echo "=> ${UBUNTU_TAG}"
+echo "================================"
+#Ubuntu
+DOCKER_BUILDKIT=1 docker buildx \
+  build \
+  --builder remotebuilder \
+  --platform linux/arm64/v8,linux/amd64 \
+  --build-arg DEPTHAI_BRANCH=${DEPTHAI_BRANCH} \
+  --cache-to type=registry,ref="${UBUNTU_CACHE_DEV_TAG}" \
+  --cache-from type=registry,ref="${UBUNTU_CACHE_DEV_TAG}" \
+  -t $UBUNTU_DEV_TAG \
+  --push \
+  --file ./robothub_sdk/docker/ubuntu/Dockerfile.dev \
   ./robothub_sdk
 
 echo "================================"
