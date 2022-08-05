@@ -55,6 +55,8 @@ class QRScanner(App):
 
     def on_setup(self, device):
         camera = device.configure_camera(dai.CameraBoardSocket.RGB, res=CameraResolution.THE_4_K, fps=self.fps, preview_size=(640, 640))
+        
+        camera.initialControl.setSceneMode(dai.CameraControl.SceneMode.BARCODE)
 
         self.scale_x = camera.getVideoWidth()//DISPLAY_SIZE[0]
         self.scale_y = camera.getVideoHeight()//DISPLAY_SIZE[1]
