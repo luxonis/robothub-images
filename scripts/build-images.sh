@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 # NOTE(michal): Change this if you want to temporarily change main branch for an unreleased version
-DEPTHAI_MAIN_BRANCH="main"
+DEPTHAI_MAIN_BRANCH="multi_cam_support"
 
 if [[ -z "${DEPTHAI_BRANCH}" ]]; then
   DEPTHAI_BRANCH="main"
