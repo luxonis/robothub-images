@@ -1,7 +1,7 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-# NOTE(michal): Change this if you want to temporarily change main branch for an unreleased version
+# NOTE: Do not changes this unless `main` branch of `depthai-python` is broken.
 DEPTHAI_MAIN_BRANCH="main"
 
 if [[ -z "${DEPTHAI_BRANCH}" ]]; then
