@@ -1,4 +1,4 @@
-# RobotHub apps
+# RobotHub SDK
 
 ## What is RobotHub app ##
 
