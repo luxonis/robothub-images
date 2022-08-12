@@ -69,7 +69,7 @@ class SynchronizedStream:
 
     def _receive(self, index: int, data: dai.ADatatype):
         with self._receive_lock:
-            if isinstance(data, (dai.ImgFrame, dai.ImgDetections, dai.NNData)):
+            if isinstance(data, (dai.ImgFrame, dai.ImgDetections, dai.SpatialImgDetections, dai.NNData)):
                 i = data.getSequenceNum()
                 if i <= self.last_completed_sequence:
                     return
