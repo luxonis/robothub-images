@@ -354,10 +354,11 @@ class Device:
                 manip_nn.initialConfig.setFrameType(frame_type)
                 manip_nn.setMaxOutputFrameSize(input_size[0] * input_size[1] * 3)  # assume 3 channels UINT8 images
 
+            manip_nn.setKeepAspectRatio(True)
             # Set crop if set
             if roi is not None:
-                # Setting to True prevents "Processing failed, potentially unsupported config" error
-                manip_nn.setKeepAspectRatio(True)
+                # If full_fov = True we do not want to keep aspect ratio
+                manip_nn.setKeepAspectRatio(not full_fov)
                 manip_nn.initialConfig.setCropRect(roi)
             # NN inputs
             manip_nn.out.link(nn.input)
