@@ -3,7 +3,7 @@
 set -eux
 
 export PACKAGE_ARCH="$(dpkg --print-architecture)"
-PKG_ROOT="$(pwd)/conmon_${CONMON_VERSION}-1"
+PKG_ROOT="$(pwd)/conmon_${CONMON_VERSION}"
 
 mkdir -p $PKG_ROOT/usr/local/libexec/podman
 
@@ -18,3 +18,5 @@ envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
 dpkg-deb --build ${PKG_ROOT}
 
 cp -f *.deb /packages
+
+tar -zcvf /packages/conmon_${CONMON_VERSION}.tar.gz "${PKG_ROOT}/usr"

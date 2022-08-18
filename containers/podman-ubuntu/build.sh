@@ -25,15 +25,17 @@ DOCKER_BUILDKIT=1 docker buildx build \
   -f ./cni-plugins/Dockerfile \
   .
 
-DOCKER_BUILDKIT=1 docker buildx build \
-  --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
-  --build-arg GO_LANG_VERSION=${GO_LANG_VERSION} \
-  --build-arg RUNC_VERSION=${RUNC_VERSION} \
-  -o "type=local,dest=$(pwd)/packages/runc" \
-  -t runc-build \
-  -f ./runc/Dockerfile \
-  .
+wget -P "$(pwd)/packages/crun/" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
+wget -P "$(pwd)/packages/crun/" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
+# DOCKER_BUILDKIT=1 docker buildx build \
+#   --builder remotebuilder \
+#   --platform linux/arm64/v8,linux/amd64 \
+#   --build-arg GO_LANG_VERSION=${GO_LANG_VERSION} \
+#   --build-arg RUNC_VERSION=${RUNC_VERSION} \
+#   -o "type=local,dest=$(pwd)/packages/runc" \
+#   -t runc-build \
+#   -f ./runc/Dockerfile \
+#   .
 
 DOCKER_BUILDKIT=1 docker buildx build \
   --builder remotebuilder \

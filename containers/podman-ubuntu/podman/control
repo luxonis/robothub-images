@@ -1,9 +1,9 @@
 Package: podman
-Version: $PODMAN_VERSION-1
+Version: $PODMAN_VERSION
 Section: base
 Priority: optional
 Architecture: $PACKAGE_ARCH
-Depends: runc (>=  1.0.0~rc4),
+Depends:
   btrfs-progs,
   iptables,
   libassuan-dev,
@@ -19,10 +19,7 @@ Depends: runc (>=  1.0.0~rc4),
   libselinux1-dev,
   libsystemd-dev,
   pkg-config,
-  runc,
   uidmap,
-  conmon,
-  container-network-stack,
   libapparmor-dev
 Maintainer: Filip Prochazka <filip@luxonis.com>
 Description: A tool for managing OCI containers and pods

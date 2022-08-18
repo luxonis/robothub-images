@@ -4,7 +4,7 @@ set -eux
 
 export PACKAGE_ARCH="$(dpkg --print-architecture)"
 
-PKG_ROOT="$(pwd)/podman_${PODMAN_VERSION}-1"
+PKG_ROOT="$(pwd)/podman_${PODMAN_VERSION}"
 
 mkdir -p "${PKG_ROOT}/usr/local/bin"
 
@@ -19,3 +19,5 @@ envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
 
 dpkg-deb --build ${PKG_ROOT}
 cp -f *.deb /packages
+
+tar -zcvf /packages/podman_${PODMAN_VERSION}.tar.gz "${PKG_ROOT}/usr"

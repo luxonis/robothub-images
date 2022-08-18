@@ -1,9 +1,8 @@
 Package: cni-plugins
-Version: $CNI_PLUGINS_VERSION-1
+Version: $CNI_PLUGINS_VERSION
 Section: base
 Priority: optional
 Architecture: $PACKAGE_ARCH
-Depends: runc (>=  1.0.0~rc4)
 Provides: container-network-stack (= 1.0)
 Maintainer: Filip Prochazka <filip@luxonis.com>
 Description: Some CNI network plugins, maintained by the containernetworking team.
