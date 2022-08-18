@@ -22,4 +22,4 @@ envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
 
 #cp *.deb /packages
 
-tar -zcvf /packages/cni-plugins_${CNI_PLUGINS_VERSION}_${ARCH}.tar.gz "${PKG_ROOT}/usr"
+tar -zcvf /packages/cni-plugins_${CNI_PLUGINS_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr

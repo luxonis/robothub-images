@@ -21,4 +21,4 @@ envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
 #dpkg-deb --build ${PKG_ROOT}
 #cp -f *.deb /packages
 
-tar -zcvf /packages/podman_${PODMAN_VERSION}_${ARCH}.tar.gz "${PKG_ROOT}/usr"
+tar -zcvf /packages/podman_${PODMAN_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr
