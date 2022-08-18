@@ -18,6 +18,15 @@ DOCKER_BUILDKIT=1 docker buildx build \
 DOCKER_BUILDKIT=1 docker buildx build \
   --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
+  --build-arg NETAVARK_VERSION=${NETAVARK_VERSION} \
+  -o "type=local,dest=$(pwd)/packages/netavark" \
+  -t netavark-build \
+  -f ./netavark/Dockerfile \
+  .
+
+DOCKER_BUILDKIT=1 docker buildx build \
+  --builder remotebuilder \
+  --platform linux/arm64/v8,linux/amd64 \
   --build-arg GO_LANG_VERSION=${GO_LANG_VERSION} \
   --build-arg CNI_PLUGINS_VERSION=${CNI_PLUGINS_VERSION} \
   -o "type=local,dest=$(pwd)/packages/cni-plugins" \
@@ -25,8 +34,8 @@ DOCKER_BUILDKIT=1 docker buildx build \
   -f ./cni-plugins/Dockerfile \
   .
 
-wget -P "$(pwd)/packages/crun/" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
-wget -P "$(pwd)/packages/crun/" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
+wget -P "$(pwd)/packages/crun/" -O crun_${CRUN_VERSION}_x86_64 https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
+wget -P "$(pwd)/packages/crun/" -O crun_${CRUN_VERSION}_aarch64 https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
 # DOCKER_BUILDKIT=1 docker buildx build \
 #   --builder remotebuilder \
 #   --platform linux/arm64/v8,linux/amd64 \
