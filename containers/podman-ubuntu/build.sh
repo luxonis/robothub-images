@@ -34,8 +34,9 @@ DOCKER_BUILDKIT=1 docker buildx build \
   -f ./cni-plugins/Dockerfile \
   .
 
-wget -P "$(pwd)/packages/crun/" -O crun_${CRUN_VERSION}_x86_64 https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
-wget -P "$(pwd)/packages/crun/" -O crun_${CRUN_VERSION}_aarch64 https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
+mkdir -p ./packages/crun
+wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_x86_64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
+wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_aarch64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
 # DOCKER_BUILDKIT=1 docker buildx build \
 #   --builder remotebuilder \
 #   --platform linux/arm64/v8,linux/amd64 \

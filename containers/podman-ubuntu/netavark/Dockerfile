@@ -10,6 +10,7 @@ RUN chmod +x /build/build.sh && mkdir /packages
 WORKDIR /build
 
 ARG NETAVARK_VERSION
+ARG AARDVARK_DNS_VERSION
 RUN ./build.sh
 
 FROM scratch
