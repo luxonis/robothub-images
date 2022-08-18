@@ -2,6 +2,7 @@
 
 set -eux
 
+ARCH="$(uname -m)"
 export PACKAGE_ARCH="$(dpkg --print-architecture)"
 
 PKG_ROOT="$(pwd)/cni-plugins_${CNI_PLUGINS_VERSION}"
@@ -17,8 +18,8 @@ cd ..
 mkdir -p "${PKG_ROOT}/DEBIAN"
 envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
 
-dpkg-deb --build ${PKG_ROOT}
+#dpkg-deb --build ${PKG_ROOT}
 
-cp *.deb /packages
+#cp *.deb /packages
 
-tar -zcvf /packages/cni-plugins_${CNI_PLUGINS_VERSION}.tar.gz "${PKG_ROOT}/usr"
+tar -zcvf /packages/cni-plugins_${CNI_PLUGINS_VERSION}_${ARCH}.tar.gz "${PKG_ROOT}/usr"

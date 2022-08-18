@@ -2,6 +2,7 @@
 
 set -eux
 
+ARCH="$(uname -m)"
 export PACKAGE_ARCH="$(dpkg --print-architecture)"
 PKG_ROOT="$(pwd)/conmon_${CONMON_VERSION}"
 
@@ -15,8 +16,8 @@ make DESTDIR=$PKG_ROOT podman
 cd ..
 mkdir -p "${PKG_ROOT}/DEBIAN"
 envsubst < "./control" > "${PKG_ROOT}/DEBIAN/control"
-dpkg-deb --build ${PKG_ROOT}
 
-cp -f *.deb /packages
+#dpkg-deb --build ${PKG_ROOT}
+#cp -f *.deb /packages
 
-tar -zcvf /packages/conmon_${CONMON_VERSION}.tar.gz "${PKG_ROOT}/usr"
+tar -zcvf /packages/conmon_${CONMON_VERSION}_${ARCH}.tar.gz "${PKG_ROOT}/usr"
