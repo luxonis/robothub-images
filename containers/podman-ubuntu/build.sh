@@ -19,6 +19,7 @@ DOCKER_BUILDKIT=1 docker buildx build \
   --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
   --build-arg NETAVARK_VERSION=${NETAVARK_VERSION} \
+  --build-arg AARDVARK_DNS_VERSION=${AARDVARK_DNS_VERSION} \
   -o "type=local,dest=$(pwd)/packages/netavark" \
   -t netavark-build \
   -f ./netavark/Dockerfile \
