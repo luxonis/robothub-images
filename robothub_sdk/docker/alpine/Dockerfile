@@ -41,6 +41,20 @@ RUN pip3 install -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
+ARG TARGETARCH
+ARG S6_OVERLAY_VERSION=3.1.2.1
+
+RUN apk add --no-cache xz wget
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+RUN case ${TARGETARCH} in \
+         "amd64")  S6_ARCH=x86_64  ;; \
+         "arm64")  S6_ARCH=aarch64  ;; \
+    esac \
+    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz -P /tmp
+    && tar -C / -Jxpf /tmp/s6-overlay-${S6_ARCH}.tar.xz
+RUN apk remove xz wget
+
 # Clear Python compiled artifacts
 RUN find /usr -depth \
     		\( \
