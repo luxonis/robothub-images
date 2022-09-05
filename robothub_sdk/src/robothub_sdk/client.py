@@ -296,6 +296,9 @@ class AgentClient:
         if stream.enabled:
             self._send_message(f"stream/{self.app_id}/{stream.id}", frame.getData().tobytes())
 
+    def send_poweroff(self):
+        self._send_message(f"poweroff", "")
+
     def send_response(self, response: Response):
         request = response.request
         payload = response.payload

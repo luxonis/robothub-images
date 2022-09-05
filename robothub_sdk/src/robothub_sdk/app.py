@@ -108,6 +108,9 @@ class App:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
 
+    def send_poweroff(self):
+        self._comm.send_poweroff()
+
     def send_detection(
         self, title: str, tags: List[str] = None, data: Any = None, frames: List[Tuple[dai.ImgFrame, Literal["jpeg", "raw"]]] = None, video: Union[bytes, memoryview] = None, files: List[Tuple[Union[bytes, memoryview], str, str]] = None
     ) -> Detection:
