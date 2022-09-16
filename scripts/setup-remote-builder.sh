@@ -26,6 +26,7 @@ docker buildx create \
   --name remotebuilder \
   --node amd64 \
   --platform linux/amd64,linux/386 \
+  --driver=docker-container \
   "ssh://ubuntu@${X86_BUILDER_IP}"
 
 echo "configuring ARM builder at ${ARM_BUILDER_IP}"
