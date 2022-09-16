@@ -2,11 +2,15 @@
 FROM ubuntu:jammy as base
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
-ENV PYTHONPATH=/lib \
+ENV S6_KEEP_ENV=1 \
+    S6_LOGGING=1 \
+    PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
+ARG TARGETARCH
 ARG DEPTHAI_BRANCH=main
+ARG S6_OVERLAY_VERSION=3.1.2.1
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -41,6 +45,19 @@ RUN pip3 install -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
+# s6-overlay
+# for more info please see https://github.com/just-containers/s6-overlay
+RUN apt-get update && apt-get install -q -y --no-install-recommends xz-utils wget
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
+RUN case ${TARGETARCH} in \
+         "amd64")  S6_ARCH=x86_64  ;; \
+         "arm64")  S6_ARCH=aarch64  ;; \
+    esac \
+    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz -P /tmp \
+    && tar -C / -Jxpf /tmp/s6-overlay-${S6_ARCH}.tar.xz
+RUN apt-get remove -y xz-utils wget
+
 COPY --from=build /opt/depthai /lib
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
@@ -59,15 +76,9 @@ FROM base
 # Squash the image to save on space
 COPY --from=stage / /
 
-ADD docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
 # Add as separate layer, since it changes often
 ADD src/robothub_sdk /lib/robothub_sdk
 
 RUN echo "print('App not installed')" > /run.py
-
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["python3", "/run.py"]
