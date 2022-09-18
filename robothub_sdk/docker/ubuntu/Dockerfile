@@ -2,15 +2,12 @@
 FROM ubuntu:jammy as base
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
-ENV S6_KEEP_ENV=1 \
-    S6_LOGGING=1 \
-    PYTHONPATH=/lib \
+ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 ARG TARGETARCH
-ARG DEPTHAI_BRANCH=main
-ARG S6_OVERLAY_VERSION=3.1.2.1
+ARG DEPTHAI_VERSION
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -23,7 +20,7 @@ FROM base as build
 
 RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-essential cmake pkg-config git
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
-RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_BRANCH}" https://github.com/luxonis/depthai-python.git
+RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
@@ -44,19 +41,6 @@ RUN mkdir -p /opt/depthai \
 RUN pip3 install -U paho-mqtt paho_socket http_router
 
 FROM base as stage
-
-# s6-overlay
-# for more info please see https://github.com/just-containers/s6-overlay
-RUN apt-get update && apt-get install -q -y --no-install-recommends xz-utils wget
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
-RUN case ${TARGETARCH} in \
-         "amd64")  S6_ARCH=x86_64  ;; \
-         "arm64")  S6_ARCH=aarch64  ;; \
-    esac \
-    && wget https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.xz -P /tmp \
-    && tar -C / -Jxpf /tmp/s6-overlay-${S6_ARCH}.tar.xz
-RUN apt-get remove -y xz-utils wget
 
 COPY --from=build /opt/depthai /lib
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
