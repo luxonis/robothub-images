@@ -19,6 +19,7 @@ IMAGE_VERSION=$(date +"%Y.%j.%H%M")
 git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_BRANCH}" https://github.com/luxonis/depthai-python.git .depthai
 cd .depthai
 DEPTHAI_VERSION=$(python3 -c 'import find_version as v; print(v.get_package_version()); exit(0);')
+cd ..
 
 BASE_PACKAGE="ghcr.io/luxonis/robothub-app"
 BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
