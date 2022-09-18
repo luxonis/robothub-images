@@ -41,7 +41,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
-  --build-arg DEPTHAI_VERSION=${DEPTHAI_VERSION} \
+  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.base=alpine" \
   -t ${BASE_ALPINE_TAG} \
@@ -58,7 +58,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64/v8,linux/amd64 \
-  --build-arg DEPTHAI_VERSION=${DEPTHAI_VERSION} \
+  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.base=ubuntu" \
   -t ${BASE_UBUNTU_TAG} \
