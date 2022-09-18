@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuo pipefail
+set -Eeux
 
 if [[ -z "${DEPTHAI_BRANCH}" ]]; then
   DEPTHAI_BRANCH="main"
@@ -34,7 +34,7 @@ echo "================================"
 
 echo "================================"
 echo "Building alpine..."
-echo "=> ${ALPINE_TAG}"
+echo "=> ${BASE_ALPINE_TAG}"
 echo "================================"
 # Alpine
 DOCKER_BUILDKIT=1 docker buildx \
@@ -51,7 +51,7 @@ DOCKER_BUILDKIT=1 docker buildx \
 
 echo "================================"
 echo "Building ubuntu..."
-echo "=> ${UBUNTU_TAG}"
+echo "=> ${BASE_UBUNTU_TAG}"
 echo "================================"
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
