@@ -12,6 +12,7 @@ ARG DEPTHAI_VERSION
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
+    rm -f /etc/localtime \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
     apt-get install -q -y --no-install-recommends software-properties-common \
