@@ -6,14 +6,16 @@ ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-ARG TARGETARCH
 ARG DEPTHAI_VERSION
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3 python3-pip python3-numpy ca-certificates && \
+    apt-get install -q -y --no-install-recommends software-properties-common \
+    add-apt-repository ppa:deadsnakes/ppa -y \
+    apt-get update && \
+    apt-get install -q -y --no-install-recommends tzdata python3.10 python3.10-pip python3.10-numpy ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 FROM base as build
@@ -28,7 +30,7 @@ RUN tar xf libusb.tar.bz2 \
     && make -j$(nproc) \
     && make install
 
-RUN apt-get install -q -y --no-install-recommends python3-dev
+RUN apt-get install -q -y --no-install-recommends python3.10-dev
 RUN cd depthai-python \
     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
     && cmake --build build --parallel $(nproc)
