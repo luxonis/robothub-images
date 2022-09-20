@@ -147,7 +147,6 @@ class Stream:
         now = time.monotonic()
         self.last_value = data
         self.last_timestamp = now
-        print(f'Adding last value to queue at time {now}')
         if isinstance(data, dai.IMUData):
             self._rate_counter.record(now, len(data.packets))
         else:

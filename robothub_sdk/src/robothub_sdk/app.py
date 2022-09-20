@@ -332,7 +332,7 @@ class App:
             while self.running:
                 had_items = False
                 now = time.monotonic()
-                print(f'printing Last run time {last_run}')
+                print(f'Adding last value to queue at time {now}')
 
                 for device in self.devices:
                     last_item = 0
