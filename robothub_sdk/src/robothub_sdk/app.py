@@ -332,6 +332,8 @@ class App:
             while self.running:
                 had_items = False
                 now = time.monotonic()
+                print(f'printing Last run time {last_run}')
+
                 for device in self.devices:
                     last_item = 0
                     for stream in device.streams.outputs():
