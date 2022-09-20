@@ -12,12 +12,12 @@ ARG DEPTHAI_VERSION
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3.10 python3-numpy ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3 ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN python3 -m ensurepip --upgrade
+RUN update-alternatives --install /usr/bin/python python /usr/local/bin/python3.10 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.10 1
+RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
+RUN python3 -m pip install numpy
 
 FROM base as build
 
