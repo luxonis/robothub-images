@@ -47,7 +47,8 @@ RUN mkdir -p /opt/depthai \
     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
     && mv /depthai-python/build/depthai*.so /opt/depthai
 
-RUN pip3 install -U paho-mqtt paho_socket http_router
+RUN python3 -m pip install -U setuptools
+RUN python3 -m pip install -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
