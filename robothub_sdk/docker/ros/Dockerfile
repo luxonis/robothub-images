@@ -15,7 +15,7 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     rm -f /etc/localtime && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends software-properties-common && \
+    apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get update && \
     apt-get install -q -y --no-install-recommends tzdata python3.10 python3.10-pip python3.10-numpy ca-certificates && \
