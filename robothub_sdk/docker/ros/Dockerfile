@@ -18,8 +18,9 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3.10 python3.10-pip python3.10-numpy ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3.10 python3-numpy ca-certificates && \
     rm -rf /var/lib/apt/lists/*
+RUN python3 -m ensurepip --upgrade
 
 FROM base as build
 
