@@ -12,7 +12,7 @@ ARG DEPTHAI_VERSION
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3 ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3 curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1

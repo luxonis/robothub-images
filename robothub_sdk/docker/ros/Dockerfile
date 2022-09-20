@@ -18,7 +18,7 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     apt-get install -y software-properties-common && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3.10 ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3.10 curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
