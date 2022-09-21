@@ -41,7 +41,7 @@ echo "================================"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
+  --platform linux/arm64,linux/amd64 \
   --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
@@ -66,7 +66,7 @@ echo "================================"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
+  --platform linux/arm64,linux/amd64 \
   --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
@@ -94,7 +94,7 @@ ROS_GALACTIC_TAG="${BASE_TAG}-ros2galactic${TAG_SUFFIX}"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
+  --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=galactic-ros-base-focal" \
   --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
@@ -117,7 +117,7 @@ ROS_FOXY_TAG="${BASE_TAG}-ros2foxy${TAG_SUFFIX}"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
+  --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=foxy-ros-base-focal" \
   --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
@@ -141,7 +141,7 @@ ROS_HUMBLE_TAG="${BASE_TAG}-ros2humble${TAG_SUFFIX}"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64/v8,linux/amd64 \
+  --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
   --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
@@ -156,7 +156,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${ROS_HUMBLE_TAG}" \
   --push \
-  --file ./robothub_sdk/docker/ros/Dockerfile \
+  --file ./robothub_sdk/docker/ros/Dockerfile.humble \
   ./robothub_sdk
 
 echo "================================"
