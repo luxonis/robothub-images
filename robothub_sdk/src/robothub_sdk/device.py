@@ -188,8 +188,21 @@ class Device:
                 camera.preview,
                 stream_type=StreamType.FRAME,
                 rate=fps,
-                description=f"Left camera video {camera.getResolutionWidth()}x{camera.getResolutionHeight()}@{fps}",
-                resolution=(camera.getResolutionWidth(), camera.getResolutionHeight()),
+                description=f"Left camera preview {camera.getPreviewWidth()}x{camera.getPreviewHeight()}@{fps}",
+                resolution=(camera.getPreviewWidth(), camera.getPreviewHeight()),
+            )
+
+        @cached_property
+        def color_left_video(self) -> Stream:
+            camera = self.device.ensure_camera(dai.CameraBoardSocket.LEFT)
+            fps = int(camera.getFps())
+            return self.create(
+                camera,
+                camera.video,
+                stream_type=StreamType.FRAME,
+                rate=fps,
+                description=f"Left camera video {camera.getVideoWidth()}x{camera.getVideoHeight()}@{fps}",
+                resolution=(camera.getVideoWidth(), camera.getVideoHeight()),
             )
 
         @cached_property
@@ -214,8 +227,21 @@ class Device:
                 camera.preview,
                 stream_type=StreamType.FRAME,
                 rate=fps,
-                description=f"Right camera video {camera.getResolutionWidth()}x{camera.getResolutionHeight()}@{fps}",
-                resolution=(camera.getResolutionWidth(), camera.getResolutionHeight()),
+                description=f"Right camera preview {camera.getPreviewWidth()}x{camera.getPreviewHeight()}@{fps}",
+                resolution=(camera.getPreviewWidth(), camera.getPreviewHeight()),
+            )
+
+        @cached_property
+        def color_right_video(self) -> Stream:
+            camera = self.device.ensure_camera(dai.CameraBoardSocket.RIGHT)
+            fps = int(camera.getFps())
+            return self.create(
+                camera,
+                camera.video,
+                stream_type=StreamType.FRAME,
+                rate=fps,
+                description=f"Right camera video {camera.getVideoWidth()}x{camera.getVideoHeight()}@{fps}",
+                resolution=(camera.getVideoWidth(), camera.getVideoHeight()),
             )
 
         @cached_property
@@ -227,8 +253,21 @@ class Device:
                 camera.preview,
                 stream_type=StreamType.FRAME,
                 rate=fps,
-                description=f"Camera D video {camera.getResolutionWidth()}x{camera.getResolutionHeight()}@{fps}",
-                resolution=(camera.getResolutionWidth(), camera.getResolutionHeight()),
+                description=f"Camera D preview {camera.getPreviewWidth()}x{camera.getPreviewHeight()}@{fps}",
+                resolution=(camera.getPreviewWidth(), camera.getPreviewHeight()),
+            )
+
+        @cached_property
+        def color_cam_d_video(self) -> Stream:
+            camera = self.device.ensure_camera(dai.CameraBoardSocket.CAM_D)
+            fps = int(camera.getFps())
+            return self.create(
+                camera,
+                camera.video,
+                stream_type=StreamType.FRAME,
+                rate=fps,
+                description=f"Camera D video {camera.getVideoWidth()}x{camera.getVideoHeight()}@{fps}",
+                resolution=(camera.getVideoWidth(), camera.getVideoHeight()),
             )
 
         statistics: Stream
@@ -237,8 +276,13 @@ class Device:
         color_still: Stream
 
         color_left_preview: Stream
+        color_left_video: Stream
+
         color_right_preview: Stream
+        color_right_video: Stream
+
         color_cam_d_preview: Stream
+        color_cam_d_video: Stream
 
         mono_left_video: Stream
         mono_right_video: Stream
