@@ -32,7 +32,7 @@ RUN tar xf libusb.tar.bz2 \
     && cp /tmp/linux_netlink.c ./libusb/os/linux_netlink.c \
     && ./configure --disable-udev \
     && make -j$(nproc) \
-    && make install
+    && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
 RUN apt-get install -q -y --no-install-recommends python3.10-dev
 RUN cd depthai-python \
@@ -50,6 +50,7 @@ RUN python3 -m pip install -U paho-mqtt paho_socket http_router
 FROM base as stage
 
 COPY --from=build /opt/depthai /lib
+COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear Python compiled artifacts
