@@ -25,8 +25,11 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-e
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
 RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
+COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
+    && rm ./libusb/os/linux_netlink.c \
+    && cp /tmp/linux_netlink.c ./libusb/os/linux_netlink.c \
     && ./configure --disable-udev \
     && make -j$(nproc) \
     && make install
