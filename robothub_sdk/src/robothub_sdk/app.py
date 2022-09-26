@@ -332,8 +332,6 @@ class App:
             while self.running:
                 had_items = False
                 now = time.monotonic()
-                print(f'Adding last value to queue at time {now}')
-
                 for device in self.devices:
                     last_item = 0
                     for stream in device.streams.outputs():

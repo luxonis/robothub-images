@@ -296,7 +296,7 @@ class Device:
         color_order: Literal["RGB", "BGR"] = "BGR",
     ) -> Tuple[SupportedNeuralNetworks, Stream, Stream]:
         assert source.output_node is not None
-        assert source.type == StreamType.FRAME
+        # assert source.type == StreamType.FRAME
 
         if config is None:
             config = {}
@@ -343,7 +343,7 @@ class Device:
         if depth is not None:
             depth.depth.link(nn.inputDepth)
 
-        if source.resolution != input_size or roi is not None:
+        if source.type == StreamType.FRAME and (source.resolution != input_size or roi is not None):
             manip_nn = self.pipeline.createImageManip()
             manip_nn.inputImage.setQueueSize(1)
             manip_nn.inputImage.setBlocking(False)
