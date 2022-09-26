@@ -333,6 +333,9 @@ class App:
                 had_items = False
                 now = time.monotonic()
                 for device in self.devices:
+                    # NOTE: needs depthai>2.17.4
+                    if device.internal.isClosed():
+                        raise RuntimeError(f"Device {device.id} / {device.name} disconnected.")
                     last_item = 0
                     for stream in device.streams.outputs():
                         last_item = max(last_item, stream.last_timestamp)
