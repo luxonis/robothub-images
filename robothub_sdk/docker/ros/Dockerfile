@@ -31,11 +31,14 @@ RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-e
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
 RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
+COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
+    && rm ./libusb/os/linux_netlink.c \
+    && cp /tmp/linux_netlink.c ./libusb/os/linux_netlink.c \
     && ./configure --disable-udev \
     && make -j$(nproc) \
-    && make install
+    && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
 RUN apt-get install -q -y --no-install-recommends python3.10-dev
 RUN cd depthai-python \
@@ -53,6 +56,7 @@ RUN python3 -m pip install -U paho-mqtt paho_socket http_router
 FROM base as stage
 
 COPY --from=build /opt/depthai /lib
+COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear Python compiled artifacts
