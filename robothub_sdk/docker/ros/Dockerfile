@@ -15,13 +15,8 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     rm -f /etc/localtime && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3.10 curl ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3 curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 RUN python3 -m pip install numpy
 
@@ -40,7 +35,7 @@ RUN tar xf libusb.tar.bz2 \
     && make -j$(nproc) \
     && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
-RUN apt-get install -q -y --no-install-recommends python3.10-dev
+RUN apt-get install -q -y --no-install-recommends python3-dev
 RUN cd depthai-python \
     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
     && cmake --build build --parallel $(nproc)
@@ -57,7 +52,7 @@ FROM base as stage
 
 COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
-COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
+COPY --from=build /usr/local/lib/python3.8 /usr/local/lib/python3.8
 
 # Clear Python compiled artifacts
 RUN find /usr -depth \
