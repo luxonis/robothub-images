@@ -23,6 +23,7 @@ else
     git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_BRANCH}" https://github.com/luxonis/depthai-python.git .depthai
     cd .depthai
     DEPTHAI_VERSION=$(python3 -c 'import find_version as v; print(v.get_package_version()); exit(0);')
+    DEPTHAI_VERSION="v"$DEPTHAI_VERSION
     cd ..
 fi
 
@@ -46,7 +47,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
-  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
+  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=alpine" \
@@ -71,7 +72,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
-  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
+  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ubuntu" \
@@ -100,7 +101,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=galactic-ros-base-focal" \
-  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
+  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/galactic" \
@@ -123,7 +124,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=foxy-ros-base-focal" \
-  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
+  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/foxy" \
@@ -147,7 +148,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
   --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
-  --build-arg "DEPTHAI_VERSION=v${DEPTHAI_VERSION}" \
+  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/humble" \
