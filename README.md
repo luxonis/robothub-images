@@ -47,10 +47,6 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 3. Click on Launch App button, choose your app and wait until the app is deployed to the robot
 4. The app should be running on the robot
 
-## App debugging ##
-
-??
-
 
 ## App components ##
 
@@ -60,7 +56,15 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 **Dockerfile** contains information about how to build the app container
 
 
+## Frequently Asked Questions ##
 
+- ***Step 2 - I'm getting error "E: Unable to locate package buildah"***
+    -  Please verify you are running Ubuntu 22.04. Ubuntu 20.04 does not support this package so you can't install RobotHub CLI on it. 
+
+
+## App debugging ##
+
+??
 
 
 
