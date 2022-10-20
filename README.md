@@ -60,6 +60,10 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 
 - ***Step 2 - I'm getting error "E: Unable to locate package buildah"***
     -  Please verify you are running Ubuntu 22.04. Ubuntu 20.04 does not support this package so you can't install RobotHub CLI on it. 
+   
+- ***Step 5 - During the build I'm getting error "/bin/bash: exec format error"***
+    -  Most likely QEMU is not configured correctly. Keep in mind you need to repeat the first command of step 3 in every new terminal session if you want to push an app. 
+    - If you are getting this error while developing using a custom image (which we don't recommend), make sure the custom image is supported both on x64 and ARM64 - not just one. 
 
 
 ## App debugging ##
