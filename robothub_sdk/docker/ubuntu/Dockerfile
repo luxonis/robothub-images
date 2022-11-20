@@ -12,7 +12,7 @@ ARG DEPTHAI_VERSION
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3 curl ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3 curl python3-opencv ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
@@ -45,8 +45,7 @@ RUN mkdir -p /opt/depthai \
     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
     && mv /depthai-python/build/depthai*.so /opt/depthai
 
-RUN apt-get install -y ffmpeg libsm6 libxext6
-RUN apt-get install -q -y python3-opencv
+
 RUN python3 -m pip install -U setuptools
 RUN python3 -m pip install -U paho-mqtt paho_socket http_router opencv-contrib-python requests distinctipy xmltodict matplotlib blobconverter marshmallow av
 
