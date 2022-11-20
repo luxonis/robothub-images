@@ -27,7 +27,7 @@ else
     cd ..
 fi
 
-BASE_PACKAGE="ghcr.io/luxonis/robothub-app"
+BASE_PACKAGE="ghcr.io/luxonis/robothub-app-v2"
 BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 
 BASE_ALPINE_TAG="${BASE_TAG}-alpine3.16${TAG_SUFFIX}"
@@ -37,31 +37,6 @@ echo "================================"
 echo "Building images..."
 echo "DEPTHAI_VERSION=${DEPTHAI_VERSION}"
 echo "================================"
-
-echo "================================"
-echo "Building alpine..."
-echo "=> ${BASE_ALPINE_TAG}"
-echo "================================"
-# Alpine
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=alpine" \
-  --label	"org.opencontainers.image.url=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.documentation=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.source=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: Alpine\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t ${BASE_ALPINE_TAG} \
-  --push \
-  --file ./robothub_sdk/docker/alpine/Dockerfile \
-  ./robothub_sdk
 
 echo "================================"
 echo "Building ubuntu..."
@@ -76,9 +51,6 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ubuntu" \
-  --label	"org.opencontainers.image.url=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.documentation=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.source=https://github.com/luxonis/robothub-sdk" \
   --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label	"org.opencontainers.image.vendor=Luxonis" \
   --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
@@ -105,9 +77,6 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/galactic" \
-  --label	"org.opencontainers.image.url=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.documentation=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.source=https://github.com/luxonis/robothub-sdk" \
   --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label	"org.opencontainers.image.vendor=Luxonis" \
   --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
@@ -128,9 +97,6 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/foxy" \
-  --label	"org.opencontainers.image.url=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.documentation=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.source=https://github.com/luxonis/robothub-sdk" \
   --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label	"org.opencontainers.image.vendor=Luxonis" \
   --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
@@ -152,9 +118,6 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label	"com.luxonis.rh.base=ros2/humble" \
-  --label	"org.opencontainers.image.url=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.documentation=https://github.com/luxonis/robothub-sdk" \
-  --label	"org.opencontainers.image.source=https://github.com/luxonis/robothub-sdk" \
   --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label	"org.opencontainers.image.vendor=Luxonis" \
   --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
