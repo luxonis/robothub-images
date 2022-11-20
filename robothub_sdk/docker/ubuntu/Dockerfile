@@ -35,7 +35,7 @@ RUN tar xf libusb.tar.bz2 \
     && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
 RUN apt-get install -q -y --no-install-recommends python3.10-dev
-RUN apt-get install -q -y python3-opencv
+
 RUN cd depthai-python \
     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
     && cmake --build build --parallel $(nproc)
@@ -45,6 +45,8 @@ RUN mkdir -p /opt/depthai \
     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
     && mv /depthai-python/build/depthai*.so /opt/depthai
 
+RUN apt-get install -y ffmpeg libsm6 libxext6
+RUN apt-get install -q -y python3-opencv
 RUN python3 -m pip install -U setuptools
 RUN python3 -m pip install -U paho-mqtt paho_socket http_router opencv-contrib-python requests distinctipy xmltodict matplotlib blobconverter marshmallow av
 
@@ -70,7 +72,7 @@ FROM base
 COPY --from=stage / /
 
 # Add as separate layer, since it changes often
-ADD src/robothub_sdk /lib/robothub_sdk
+# ADD src/robothub_sdk /lib/robothub_sdk
 
 RUN echo "print('App not installed')" > /run.py
 
