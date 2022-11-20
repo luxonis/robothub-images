@@ -35,6 +35,7 @@ RUN tar xf libusb.tar.bz2 \
     && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
 RUN apt-get install -q -y --no-install-recommends python3.10-dev
+RUN apt-get install -q -y python3-opencv
 RUN cd depthai-python \
     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
     && cmake --build build --parallel $(nproc)
@@ -45,7 +46,7 @@ RUN mkdir -p /opt/depthai \
     && mv /depthai-python/build/depthai*.so /opt/depthai
 
 RUN python3 -m pip install -U setuptools
-RUN python3 -m pip install -U paho-mqtt paho_socket http_router
+RUN python3 -m pip install -U paho-mqtt paho_socket http_router requests distinctipy xmltodict matplotlib blobconverter marshmallow av
 
 FROM base as stage
 
