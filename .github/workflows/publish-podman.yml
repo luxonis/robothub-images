@@ -12,12 +12,12 @@ on:
 
 env:
   GO_LANG_VERSION: '1.17'
-  CONMON_VERSION: '2.1.3'
+  CONMON_VERSION: '2.1.5'
   CNI_PLUGINS_VERSION: '1.1.1'
-  CRUN_VERSION: '1.5'
-  PODMAN_VERSION: '4.2.0'
-  NETAVARK_VERSION: '1.1.0'
-  AARDVARK_DNS_VERSION: '1.1.0'
+  CRUN_VERSION: '1.7'
+  PODMAN_VERSION: '4.3.1'
+  NETAVARK_VERSION: '1.3.0'
+  AARDVARK_DNS_VERSION: '1.3.0'
 
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
@@ -26,52 +26,60 @@ env:
 
 jobs:
   build:
-    name: Build & upload packages
-    runs-on: ubuntu-latest
+    name: Build Agent
+    strategy:
+      matrix:
+        os: [buildjet-8vcpu-ubuntu-2204, buildjet-8vcpu-ubuntu-2204-arm]
+        include:
+          - os: buildjet-8vcpu-ubuntu-2204
+            arch: x86_64
+          - os: buildjet-8vcpu-ubuntu-2204-arm
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
     permissions:
       packages: write
       contents: read
-    outputs:
-      x86_builder_id: ${{ steps.launch_instances.outputs.x86_builder_id }}
-      arm_builder_id: ${{ steps.launch_instances.outputs.arm_builder_id }}
     steps:
       - 
+        name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
       - 
-        name: Launch instances
-        id: launch_instances
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        name: Setup GO
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^${{ env.GO_LANG_VERSION }}'
+      - 
+        name: Setup common apt deps
         run: |
-          ./scripts/launch-builders.sh
+          sudo apt-get update
+          sudo apt-get install -y gcc git make gettext-base runc libsystemd-dev libseccomp-dev libc6-dev libglib2.0-dev
       -
-        name: Build packages
-        continue-on-error: true
-        env:
-          SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-          X86_BUILDER_IP: ${{ steps.launch_instances.outputs.x86_ip }}
-          ARM_BUILDER_IP: ${{ steps.launch_instances.outputs.arm_ip }}
+        name: Build conmon
+        working-directory: ./containers/podman-ubuntu
         run: |
-          ./scripts/setup-remote-builder.sh
-          ./containers/podman-ubuntu/build.sh
+          mkdir -p ./packages/conmon
+          sh ./conmon/build.sh
+      -
+        name: Build netavark
+        working-directory: ./containers/podman-ubuntu
+        run: |
+          sh ./netavark/build.sh
+      -
+        name: Download crun
+        working-directory: ./containers/podman-ubuntu
+        run: |
+          mkdir -p ./packages/crun
+          wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_x86_64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
+          wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_aarch64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
+      -
+        name: Build podman
+        working-directory: ./containers/podman-ubuntu
+        run: |
+          sudo apt-get install btrfs-progs iptables libassuan-dev libbtrfs-dev libdevmapper-dev libgpgme-dev libgpg-error-dev libprotobuf-dev libprotobuf-c-dev libselinux1-dev uidmap libapparmor-dev 
+          sh ./podman/build.sh
       -
         name: Archive packages
         uses: actions/upload-artifact@v3
         with:
           name: packages
           path: containers/podman-ubuntu/packages
-      -
-        name: Terminate instances
-        if: ${{ always() && steps.launch_instances.outcome == 'success' }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_X86_BUILDER_ID: ${{ steps.launch_instances.outputs.x86_builder_id }}
-          AWS_ARM_BUILDER_ID: ${{ steps.launch_instances.outputs.arm_builder_id }}
-        run: |
-          ./scripts/stop-builders.sh
