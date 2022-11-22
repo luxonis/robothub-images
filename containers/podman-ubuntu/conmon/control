@@ -1,7 +1,0 @@
-Package: conmon
-Version: $CONMON_VERSION
-Section: base
-Priority: optional
-Architecture: $PACKAGE_ARCH
-Maintainer: Filip Prochazka <filip@luxonis.com>
-Description: An OCI container runtime monitor.

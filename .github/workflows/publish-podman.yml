@@ -58,12 +58,12 @@ jobs:
         working-directory: ./containers/podman-ubuntu
         run: |
           mkdir -p ./packages/conmon
-          sh ./conmon/build.sh
+          sh ./build-conmon.sh
       -
         name: Build netavark
         working-directory: ./containers/podman-ubuntu
         run: |
-          sh ./netavark/build.sh
+          sh ./build-netavark.sh
       -
         name: Download crun
         working-directory: ./containers/podman-ubuntu
@@ -76,7 +76,7 @@ jobs:
         working-directory: ./containers/podman-ubuntu
         run: |
           sudo apt-get install btrfs-progs iptables libassuan-dev libbtrfs-dev libdevmapper-dev libgpgme-dev libgpg-error-dev libprotobuf-dev libprotobuf-c-dev libselinux1-dev uidmap libapparmor-dev 
-          sh ./podman/build.sh
+          sh ./build-podman.sh
       -
         name: Archive packages
         uses: actions/upload-artifact@v3
