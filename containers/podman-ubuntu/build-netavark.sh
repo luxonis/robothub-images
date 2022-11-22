@@ -19,4 +19,4 @@ make
 cp ./bin/aardvark-dns "${PKG_ROOT}/usr/local/libexec/podman/"
 cd ..
 
-tar -zcvf /packages/aardvark_dns_${AARDVARK_DNS_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr
+tar -zcvf ./packages/aardvark_dns_${AARDVARK_DNS_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr

@@ -14,4 +14,4 @@ cd podman
 make BUILDTAGS="seccomp apparmor systemd"
 make DESTDIR=$PKG_ROOT install
 cd ..
-tar -zcvf /packages/podman_${PODMAN_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr
+tar -zcvf ./packages/podman_${PODMAN_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr

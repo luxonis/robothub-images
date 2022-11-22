@@ -14,4 +14,4 @@ export GOCACHE="$(mktemp -d)"
 make DESTDIR=$PKG_ROOT podman
 
 cd ..
-tar -zcvf /packages/conmon_${CONMON_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr
+tar -zcvf ./packages/conmon_${CONMON_VERSION}_${ARCH}.tar.gz -C "${PKG_ROOT}" usr
