@@ -50,7 +50,7 @@ RUN mkdir -p /opt/depthai \
 
 
 RUN python3 -m pip install -U setuptools
-RUN python3 -m pip install -U paho-mqtt paho_socket http_router opencv-contrib-python requests distinctipy xmltodict matplotlib blobconverter marshmallow av
+RUN python3 -m pip install -U paho-mqtt paho_socket http_router opencv-contrib-python requests distinctipy xmltodict matplotlib blobconverter marshmallow av Qt.py
 
 FROM base as stage
 
