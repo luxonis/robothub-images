@@ -14,6 +14,7 @@ RUN go version
 
 RUN apt-get install -y curl
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ENV PATH="${PATH}:$HOME/.cargo/bin"
 RUN cargo --version
 
 VOLUME /app
