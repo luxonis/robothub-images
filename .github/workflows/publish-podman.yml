@@ -11,7 +11,7 @@ on:
       - 'containers/podman-ubuntu/**/*'
 
 env:
-  GO_LANG_VERSION: '1.17'
+  GO_LANG_VERSION: '1.17.13'
   CONMON_VERSION: '2.1.5'
   CNI_PLUGINS_VERSION: '1.1.1'
   CRUN_VERSION: '1.7'
@@ -40,43 +40,21 @@ jobs:
       packages: write
       contents: read
     steps:
-      - 
+      -
         name: Checkout
         uses: actions/checkout@v3
-      - 
-        name: Setup GO
-        uses: actions/setup-go@v3
-        with:
-          go-version: '^${{ env.GO_LANG_VERSION }}'
-      - 
-        name: Setup common apt deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc git make gettext-base runc libsystemd-dev libseccomp-dev libc6-dev libglib2.0-dev
       -
-        name: Build conmon
-        working-directory: ./containers/podman-ubuntu
+        name: Prepare builder
         run: |
-          mkdir -p ./packages/conmon
-          sh ./build-conmon.sh
+          docker build -t podman-builder --build-arg "GO_LANG_VERSION=v${GO_LANG_VERSION}" .
       -
-        name: Build netavark
-        working-directory: ./containers/podman-ubuntu
-        run: |
-          sh ./build-netavark.sh
-      -
-        name: Download crun
+        name: Build
         working-directory: ./containers/podman-ubuntu
         run: |
           mkdir -p ./packages/crun
           wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_x86_64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-amd64
           wget -O "$(pwd)/packages/crun/crun_${CRUN_VERSION}_aarch64" https://github.com/containers/crun/releases/download/${CRUN_VERSION}/crun-${CRUN_VERSION}-linux-arm64
-      -
-        name: Build podman
-        working-directory: ./containers/podman-ubuntu
-        run: |
-          sudo apt-get install btrfs-progs iptables libassuan-dev libbtrfs-dev libdevmapper-dev libgpgme-dev libgpg-error-dev libprotobuf-dev libprotobuf-c-dev libselinux1-dev uidmap libapparmor-dev 
-          sh ./build-podman.sh
+          docker run -e CONMON_VERSION -e ARCH -e PKG_ROOT -e NETAVARK_VERSION -e AARDVARK_DNS_VERSION -e PODMAN_VERSION -v `pwd`:/app podman-builder
       -
         name: Archive packages
         uses: actions/upload-artifact@v3
