@@ -47,7 +47,7 @@ jobs:
         name: Prepare builder
         working-directory: ./containers/podman-ubuntu
         run: |
-          docker build -t podman-builder --build-arg "GO_LANG_VERSION=v${GO_LANG_VERSION}" .
+          docker build -t podman-builder --build-arg "GO_LANG_VERSION=${GO_LANG_VERSION}" .
       -
         name: Build
         working-directory: ./containers/podman-ubuntu
