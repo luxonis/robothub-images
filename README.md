@@ -8,7 +8,7 @@ RobotHub app is docker container with special **robotapp.yml** which defines ini
 ## Connecting your first robot to the RobotHub
 
 1. Login to your account at https://hub.luxonis.com/
-2. Go to robot list and click on "Add new robot" button
+2. Go to robot list and click on "Connect robot" button
 3. Copy the command to your linux device and robot should appear in the list of your robots in no more than 10 - 20 seconds after the installation is finished.
 
 **Supported operating systems**: currently we support Ubuntu Server version 22.04.
