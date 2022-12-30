@@ -22,6 +22,8 @@ RUN git clone --depth=1 --recurse-submodules --branch sdk/robothub_depthai https
 RUN cp -r depthai_tmp/depthai_sdk/src/depthai_sdk /lib/depthai_sdk
 RUN rm -rf depthai_tmp
 
+RUN python3 -m pip install robothub-depthai
+
 FROM base as build
 
 RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-essential cmake pkg-config git
