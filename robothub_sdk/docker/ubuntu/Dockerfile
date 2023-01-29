@@ -6,7 +6,7 @@ ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-ARG DEPTHAI_VERSION
+# ARG DEPTHAI_VERSION
 
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
@@ -17,7 +17,7 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
-RUN python3 -m pip install numpy
+RUN python3 -m pip install --no-cache-dir numpy
 
 #RUN git clone --depth=1 --recurse-submodules --branch sdk/optimization https://github.com/luxonis/depthai.git depthai_tmp
 #RUN cp -r depthai_tmp/depthai_sdk/src/depthai_sdk /lib/depthai_sdk
@@ -25,13 +25,13 @@ RUN python3 -m pip install numpy
 
 # RUN python3 -m pip install robothub-depthai
 
-RUN pip install git+https://github.com/luxonis/robothub-depthai.git@develop
-RUN pip install git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
-RUN pip install depthai
+RUN pip install --no-cache-dir git+https://github.com/luxonis/robothub-depthai.git@develop
+RUN pip install --no-cache-dir git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
+RUN pip install --no-cache-dir depthai
 
 FROM base as build
 
-# RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-essential cmake pkg-config git
+RUN apt-get update && apt-get install -q -y --no-install-recommends wget bzip2 build-essential && rm -rf /var/lib/apt/lists/*
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
 # RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
@@ -44,7 +44,7 @@ RUN tar xf libusb.tar.bz2 \
     && make -j$(nproc) \
     && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
-RUN apt-get install -q -y --no-install-recommends python3.10-dev
+# RUN apt-get install -q -y --no-install-recommends python3.10-dev
 
 # RUN cd depthai-python \
 #     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
@@ -56,8 +56,8 @@ RUN apt-get install -q -y --no-install-recommends python3.10-dev
 #     && mv /depthai-python/build/depthai*.so /opt/depthai
 
 
-RUN python3 -m pip install -U setuptools
-RUN python3 -m pip install -U paho-mqtt paho_socket http_router
+RUN python3 -m pip install --no-cache-dir -U setuptools
+RUN python3 -m pip install --no-cache-dir -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
@@ -74,6 +74,8 @@ COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear cache
 RUN rm -rf /var/cache && mkdir -p /var/cache
+RUN apt-get autoremove -y
+RUN apt-get clean
 
 FROM base
 
