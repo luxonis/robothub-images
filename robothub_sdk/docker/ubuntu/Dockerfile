@@ -18,11 +18,15 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 RUN python3 -m pip install numpy
-RUN git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai.git depthai_tmp
-RUN cp -r depthai_tmp/depthai_sdk/src/depthai_sdk /lib/depthai_sdk
-RUN rm -rf depthai_tmp
 
-RUN python3 -m pip install robothub-depthai
+#RUN git clone --depth=1 --recurse-submodules --branch sdk/optimization https://github.com/luxonis/depthai.git depthai_tmp
+#RUN cp -r depthai_tmp/depthai_sdk/src/depthai_sdk /lib/depthai_sdk
+#RUN rm -rf depthai_tmp
+
+# RUN python3 -m pip install robothub-depthai
+
+RUN pip install git+https://github.com/luxonis/robothub-depthai.git@develop
+RUN pip install git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
 
 FROM base as build
 
