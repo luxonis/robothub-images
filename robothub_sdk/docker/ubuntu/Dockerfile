@@ -12,7 +12,7 @@ ARG DEPTHAI_VERSION
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3 curl python3-opencv python3-pyqt5 git ca-certificates && \
+    apt-get install -q -y --no-install-recommends tzdata python3 curl python3-opencv git ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
@@ -27,12 +27,13 @@ RUN python3 -m pip install numpy
 
 RUN pip install git+https://github.com/luxonis/robothub-depthai.git@develop
 RUN pip install git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
+RUN pip install depthai
 
 FROM base as build
 
-RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-essential cmake pkg-config git
+# RUN apt-get update && apt-get install -q -y --no-install-recommends wget build-essential cmake pkg-config git
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
-RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
+# RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
 COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
@@ -45,31 +46,31 @@ RUN tar xf libusb.tar.bz2 \
 
 RUN apt-get install -q -y --no-install-recommends python3.10-dev
 
-RUN cd depthai-python \
-    && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
-    && cmake --build build --parallel $(nproc)
+# RUN cd depthai-python \
+#     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
+#     && cmake --build build --parallel $(nproc)
 
 # Package dependencies
-RUN mkdir -p /opt/depthai \
-    && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
-    && mv /depthai-python/build/depthai*.so /opt/depthai
+# RUN mkdir -p /opt/depthai \
+#     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
+#     && mv /depthai-python/build/depthai*.so /opt/depthai
 
 
 RUN python3 -m pip install -U setuptools
-RUN python3 -m pip install -U paho-mqtt paho_socket http_router opencv-contrib-python requests distinctipy xmltodict matplotlib blobconverter marshmallow av Qt.py
+RUN python3 -m pip install -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
-COPY --from=build /opt/depthai /lib
+# COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear Python compiled artifacts
-RUN find /usr -depth \
-    		\( \
-    			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-    			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-    		\) -exec rm -rf '{}' +
+# RUN find /usr -depth \
+#     		\( \
+#     			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+#     			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+#     		\) -exec rm -rf '{}' +
 
 # Clear cache
 RUN rm -rf /var/cache && mkdir -p /var/cache
