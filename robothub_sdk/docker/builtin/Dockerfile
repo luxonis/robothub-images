@@ -33,7 +33,7 @@ FROM base as build
 
 RUN apt-get update && \
     apt-get install -q -y --no-install-recommends wget bzip2 build-essential  && \
-    apt-get install -q -y --no-install-recommends libstdc++6 libc6 libc-bin && \
+#    apt-get install -q -y --no-install-recommends libstdc++6 libc6 libc-bin && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
