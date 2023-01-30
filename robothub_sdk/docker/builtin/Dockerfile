@@ -12,8 +12,8 @@ ENV PYTHONPATH=/lib \
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata python3 git ca-certificates && \
-    rm -rf /var/lib/apt/lists/* \
+    apt-get install -q -y --no-install-recommends tzdata python3 curl git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
