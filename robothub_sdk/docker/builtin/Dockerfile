@@ -17,7 +17,7 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
-RUN python3 -m pip install --no-cache-dir numpy
+RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 
 #RUN git clone --depth=1 --recurse-submodules --branch sdk/optimization https://github.com/luxonis/depthai.git depthai_tmp
 #RUN cp -r depthai_tmp/depthai_sdk/src/depthai_sdk /lib/depthai_sdk
@@ -27,7 +27,6 @@ RUN python3 -m pip install --no-cache-dir numpy
 
 RUN pip install --no-cache-dir git+https://github.com/luxonis/robothub-depthai.git@develop
 RUN pip install --no-cache-dir git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
-RUN pip install --no-cache-dir depthai
 
 FROM base as build
 
