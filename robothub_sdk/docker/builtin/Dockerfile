@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM python:3.10 as base
+FROM ubuntu:22.04 as base
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
@@ -12,9 +12,11 @@ ENV PYTHONPATH=/lib \
 RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends tzdata git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -q -y --no-install-recommends tzdata python3.10 git ca-certificates && \
+    rm -rf /var/lib/apt/lists/* \
 
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN python3 -m pip install --no-cache-dir numpy
 
 #RUN git clone --depth=1 --recurse-submodules --branch sdk/optimization https://github.com/luxonis/depthai.git depthai_tmp
