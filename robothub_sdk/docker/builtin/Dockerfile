@@ -29,7 +29,10 @@ RUN pip install --no-cache-dir depthai
 
 FROM base as build
 
-RUN apt-get update && apt-get install -q -y --no-install-recommends wget bzip2 build-essential && rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&  \
+    apt-get install -q -y --no-install-recommends wget bzip2 build-essential libstdc++6 && \
+    rm -rf /var/lib/apt/lists/* \
+
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
 # RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
