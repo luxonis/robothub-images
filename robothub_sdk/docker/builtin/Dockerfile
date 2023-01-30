@@ -31,9 +31,7 @@ RUN pip install --no-cache-dir git+https://github.com/luxonis/depthai.git@sdk/op
 FROM base as build
 
 RUN apt-get update && \
-    apt-get install -q -y --no-install-recommends wget bzip2 build-essential  && \
-#    apt-get install -q -y --no-install-recommends libstdc++6 libc6 libc-bin && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -q -y --no-install-recommends wget bzip2 build-essential
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
 # RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
@@ -47,7 +45,7 @@ RUN tar xf libusb.tar.bz2 \
     && make -j$(nproc) \
     && cp ./libusb/.libs/libusb-1.0.so.0.3.0 /tmp/libusb-1.0.so
 
-# RUN apt-get install -q -y --no-install-recommends python3.10-dev
+ RUN apt-get install -q -y --no-install-recommends python3.10-dev
 
 # RUN cd depthai-python \
 #     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
@@ -76,8 +74,6 @@ COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear cache
 RUN rm -rf /var/cache && mkdir -p /var/cache
-RUN apt-get autoremove -y
-RUN apt-get clean
 
 FROM base
 
