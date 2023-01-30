@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM python:3.10-slim-bullseye as base
+FROM python:3.10 as base
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \

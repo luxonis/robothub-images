@@ -47,7 +47,7 @@ echo "================================"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
+  --platform linux/amd64 \
   --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
