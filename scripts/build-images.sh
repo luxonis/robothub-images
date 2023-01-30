@@ -32,6 +32,7 @@ BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 
 BASE_ALPINE_TAG="${BASE_TAG}-alpine3.16${TAG_SUFFIX}"
 BASE_UBUNTU_TAG="${BASE_TAG}-ubuntu22.04${TAG_SUFFIX}"
+BASE_BUILTIN_TAG="${BASE_TAG}-builtin${TAG_SUFFIX}"
 
 echo "================================"
 echo "Building images..."
@@ -39,8 +40,8 @@ echo "DEPTHAI_VERSION=${DEPTHAI_VERSION}"
 echo "================================"
 
 echo "================================"
-echo "Building ubuntu..."
-echo "=> ${BASE_UBUNTU_TAG}"
+echo "Building builtin..."
+echo "=> ${BASE_BUILTIN_TAG}"
 echo "================================"
 #Ubuntu
 DOCKER_BUILDKIT=1 docker buildx \
@@ -50,82 +51,104 @@ DOCKER_BUILDKIT=1 docker buildx \
   --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ubuntu" \
+  --label	"com.luxonis.rh.base=python3.10-slim-bullseye" \
   --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label	"org.opencontainers.image.vendor=Luxonis" \
   --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t ${BASE_UBUNTU_TAG} \
+  -t ${BASE_BUILTIN_TAG} \
   --push \
-  --file ./robothub_sdk/docker/ubuntu/Dockerfile \
+  --file ./robothub_sdk/docker/builtin/Dockerfile \
   ./robothub_sdk
 
-echo "================================"
-echo "Building ROS..."
-echo "================================"
-
-#ROS
-
-ROS_GALACTIC_TAG="${BASE_TAG}-ros2galactic${TAG_SUFFIX}"
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "ROS_VERSION_TAG=galactic-ros-base-focal" \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ros2/galactic" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: ROS-galactic/Ubuntu-20.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${ROS_GALACTIC_TAG}" \
-  --push \
-  --file ./robothub_sdk/docker/ros/Dockerfile \
-  ./robothub_sdk
-
-ROS_FOXY_TAG="${BASE_TAG}-ros2foxy${TAG_SUFFIX}"
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "ROS_VERSION_TAG=foxy-ros-base-focal" \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ros2/foxy" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: ROS-foxy/Ubuntu-20.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${ROS_FOXY_TAG}" \
-  --push \
-  --file ./robothub_sdk/docker/ros/Dockerfile \
-  ./robothub_sdk
-
-  
-ROS_HUMBLE_TAG="${BASE_TAG}-ros2humble${TAG_SUFFIX}"
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ros2/humble" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${ROS_HUMBLE_TAG}" \
-  --push \
-  --file ./robothub_sdk/docker/ros/Dockerfile.humble \
-  ./robothub_sdk
+#echo "================================"
+#echo "Building ubuntu..."
+#echo "=> ${BASE_UBUNTU_TAG}"
+#echo "================================"
+##Ubuntu
+#DOCKER_BUILDKIT=1 docker buildx \
+#  build \
+#  --builder remotebuilder \
+#  --platform linux/arm64,linux/amd64 \
+#  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+#  --label	"com.luxonis.rh.base=ubuntu" \
+#  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
+#  --label	"org.opencontainers.image.vendor=Luxonis" \
+#  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
+#  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+#  -t ${BASE_UBUNTU_TAG} \
+#  --push \
+#  --file ./robothub_sdk/docker/ubuntu/Dockerfile \
+#  ./robothub_sdk
+#
+#echo "================================"
+#echo "Building ROS..."
+#echo "================================"
+#
+##ROS
+#
+#ROS_GALACTIC_TAG="${BASE_TAG}-ros2galactic${TAG_SUFFIX}"
+#
+#DOCKER_BUILDKIT=1 docker buildx \
+#  build \
+#  --builder remotebuilder \
+#  --platform linux/arm64,linux/amd64 \
+#  --build-arg "ROS_VERSION_TAG=galactic-ros-base-focal" \
+#  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+#  --label	"com.luxonis.rh.base=ros2/galactic" \
+#  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
+#  --label	"org.opencontainers.image.vendor=Luxonis" \
+#  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
+#  --label "org.opencontainers.image.description=Based on: ROS-galactic/Ubuntu-20.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+#  -t "${ROS_GALACTIC_TAG}" \
+#  --push \
+#  --file ./robothub_sdk/docker/ros/Dockerfile \
+#  ./robothub_sdk
+#
+#ROS_FOXY_TAG="${BASE_TAG}-ros2foxy${TAG_SUFFIX}"
+#
+#DOCKER_BUILDKIT=1 docker buildx \
+#  build \
+#  --builder remotebuilder \
+#  --platform linux/arm64,linux/amd64 \
+#  --build-arg "ROS_VERSION_TAG=foxy-ros-base-focal" \
+#  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+#  --label	"com.luxonis.rh.base=ros2/foxy" \
+#  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
+#  --label	"org.opencontainers.image.vendor=Luxonis" \
+#  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
+#  --label "org.opencontainers.image.description=Based on: ROS-foxy/Ubuntu-20.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+#  -t "${ROS_FOXY_TAG}" \
+#  --push \
+#  --file ./robothub_sdk/docker/ros/Dockerfile \
+#  ./robothub_sdk
+#
+#
+#ROS_HUMBLE_TAG="${BASE_TAG}-ros2humble${TAG_SUFFIX}"
+#
+#DOCKER_BUILDKIT=1 docker buildx \
+#  build \
+#  --builder remotebuilder \
+#  --platform linux/arm64,linux/amd64 \
+#  --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
+#  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+#  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+#  --label	"com.luxonis.rh.base=ros2/humble" \
+#  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
+#  --label	"org.opencontainers.image.vendor=Luxonis" \
+#  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
+#  --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+#  -t "${ROS_HUMBLE_TAG}" \
+#  --push \
+#  --file ./robothub_sdk/docker/ros/Dockerfile.humble \
+#  ./robothub_sdk
 
 echo "================================"
 echo "All done!"
