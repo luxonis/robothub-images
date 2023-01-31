@@ -35,7 +35,7 @@ RUN apt-get update && \
     apt-get install -q -y --no-install-recommends wget bzip2 build-essential
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
- RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
+ RUN git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git
 
 COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
