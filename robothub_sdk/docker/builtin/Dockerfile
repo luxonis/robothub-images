@@ -27,6 +27,7 @@ RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-
 
 RUN pip install --no-cache-dir git+https://github.com/luxonis/robothub-depthai.git@develop
 RUN pip install --no-cache-dir git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk
+RUN pip uninstall -y depthai opencv-contrib-python
 
 FROM base as build
 
@@ -34,7 +35,7 @@ RUN apt-get update && \
     apt-get install -q -y --no-install-recommends wget bzip2 build-essential
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
-# RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
+ RUN git clone --depth=1 --recurse-submodules --branch "${DEPTHAI_VERSION}" https://github.com/luxonis/depthai-python.git
 
 COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
@@ -47,30 +48,30 @@ RUN tar xf libusb.tar.bz2 \
 
  RUN apt-get install -q -y --no-install-recommends python3.10-dev
 
-# RUN cd depthai-python \
-#     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
-#     && cmake --build build --parallel $(nproc)
+ RUN cd depthai-python \
+     && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
+     && cmake --build build --parallel $(nproc)
 
 # Package dependencies
-# RUN mkdir -p /opt/depthai \
-#     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
-#     && mv /depthai-python/build/depthai*.so /opt/depthai
+RUN mkdir -p /opt/depthai \
+  && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
+  && mv /depthai-python/build/depthai*.so /opt/depthai
 
 RUN python3 -m pip install --no-cache-dir -U setuptools
 RUN python3 -m pip install --no-cache-dir -U paho-mqtt paho_socket http_router
 
 FROM base as stage
 
-# COPY --from=build /opt/depthai /lib
+COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear Python compiled artifacts
-# RUN find /usr -depth \
-#         \( \
-#            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-#            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-#         \) -exec rm -rf '{}' +
+RUN find /usr -depth \
+     \( \
+        \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+        -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+     \) -exec rm -rf '{}' +
 
 # Clear cache
 RUN rm -rf /var/cache && mkdir -p /var/cache
