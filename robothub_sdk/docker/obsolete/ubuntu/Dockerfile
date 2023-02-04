@@ -13,9 +13,11 @@ RUN echo 'Etc/UTC' > /etc/timezone && \
     ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
     apt-get install -q -y --no-install-recommends tzdata python3 curl git ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
+    rm -rf /var/lib/apt/lists/* \
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1 \
+
 RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 RUN python3 -m pip install --no-cache-dir numpy
 
@@ -55,15 +57,11 @@ RUN tar xf libusb.tar.bz2 \
 #     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
 #     && mv /depthai-python/build/depthai*.so /opt/depthai
 
-
-RUN python3 -m pip install --no-cache-dir -U setuptools
-RUN python3 -m pip install --no-cache-dir -U paho-mqtt paho_socket http_router
-
 FROM base as stage
 
 # COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
-COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
+COPY --from=build /usr/local/lib/python3 /usr/local/lib/python3
 
 # Clear Python compiled artifacts
 # RUN find /usr -depth \
@@ -74,8 +72,6 @@ COPY --from=build /usr/local/lib/python3.10 /usr/local/lib/python3.10
 
 # Clear cache
 RUN rm -rf /var/cache && mkdir -p /var/cache
-RUN apt-get autoremove -y
-RUN apt-get clean
 
 FROM base
 
