@@ -12,7 +12,7 @@ RUN apt-get update  && \
     apt-get clean
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
-    git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git \
+    git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git
 
 COPY docker/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
@@ -39,8 +39,8 @@ RUN find /usr -depth \
     			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
     		\) -exec rm -rf '{}' +
 
-RUN pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/robothub-depthai.git@develop && \
-    pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/depthai.git@sdk/optimization#subdirectory=depthai_sdk && \
+RUN pip3 install --no-deps --no-cache-dir robothub-depthai && \
+    pip3 install --no-deps --no-cache-dir depthai_sdk && \
     pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow
 
 RUN apt-get purge -y --auto-remove \
