@@ -61,6 +61,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${BASE_MINIMAL_TAG}" \
   --push \
+  --provenance=false \
   --file ./robothub_sdk/docker/minimal/Dockerfile \
   ./robothub_sdk
 
