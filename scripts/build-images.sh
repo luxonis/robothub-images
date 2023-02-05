@@ -64,6 +64,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --platform linux/arm64,linux/amd64 \
   -t "${BASE_PACKAGE}:test" \
   --push \
+  --provenance=false \
   --file ./robothub_sdk/docker/test/Dockerfile \
   ./robothub_sdk
 
