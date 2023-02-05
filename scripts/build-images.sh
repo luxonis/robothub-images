@@ -48,13 +48,23 @@ echo "Building minimal..."
 echo "=> ${BASE_MINIMAL_TAG}"
 echo "================================"
 # Minimal amd
+#DOCKER_BUILDKIT=1 docker buildx \
+#  build \
+#  --builder remotebuilder \
+#  --platform linux/arm64,linux/amd64 \
+#  -t "${BASE_MINIMAL_TAG}" \
+#  --push \
+#  --file ./robothub_sdk/docker/minimal/Dockerfile \
+#  ./robothub_sdk
+
+# Test
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
   --platform linux/arm64,linux/amd64 \
-  -t "${BASE_MINIMAL_TAG}" \
+  -t "${BASE_PACKAGE}:test" \
   --push \
-  --file ./robothub_sdk/docker/minimal/Dockerfile \
+  --file ./robothub_sdk/docker/test/Dockerfile \
   ./robothub_sdk
 
 #echo "================================"
