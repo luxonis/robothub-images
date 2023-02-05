@@ -44,7 +44,7 @@ echo "DEPTHAI_VERSION=${DEPTHAI_VERSION}"
 echo "================================"
 
 echo "================================"
-echo "Building builtin..."
+echo "Building minimal..."
 echo "=> ${BASE_MINIMAL_TAG}"
 echo "================================"
 # Minimal amd
@@ -59,12 +59,11 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub Perception App Base" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_MINIMAL_TAG}" \
+  -t "${BASE_MINIMAL_TAG}-amd64" \
   --push \
   --file ./robothub_sdk/docker/minimal/Dockerfile \
   ./robothub_sdk
 
-#Minimal arm
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
@@ -76,10 +75,13 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub Perception App Base" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_MINIMAL_TAG}" \
+  -t "${BASE_MINIMAL_TAG}-arm64" \
   --push \
   --file ./robothub_sdk/docker/minimal/Dockerfile \
   ./robothub_sdk
+
+docker manifest create "${BASE_MINIMAL_TAG}" "${BASE_MINIMAL_TAG}-amd64" "${BASE_MINIMAL_TAG}-arm64"
+docker manifest push "${BASE_MINIMAL_TAG}"
 
 #echo "================================"
 #echo "Building ubuntu..."
