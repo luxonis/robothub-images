@@ -51,7 +51,7 @@ echo "================================"
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
-  --platform linux/amd64 \
+  --platform linux/amd64,linux/arm64 \
   --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
   --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
   --label "com.luxonis.rh.base=python3.10-slim-bullseye" \
@@ -59,29 +59,11 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub Perception App Base" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_MINIMAL_TAG}-amd64" \
+  -t "${BASE_MINIMAL_TAG}" \
   --push \
+  --provenance=false \
   --file ./robothub_sdk/docker/minimal/Dockerfile \
   ./robothub_sdk
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64 \
-  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label "com.luxonis.rh.base=python3.10-slim-bullseye" \
-  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label "org.opencontainers.image.vendor=Luxonis" \
-  --label "org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_MINIMAL_TAG}-arm64" \
-  --push \
-  --file ./robothub_sdk/docker/minimal/Dockerfile \
-  ./robothub_sdk
-
-docker manifest create "${BASE_MINIMAL_TAG}" "${BASE_MINIMAL_TAG}-amd64" "${BASE_MINIMAL_TAG}-arm64"
-docker manifest push "${BASE_MINIMAL_TAG}"
 
 #echo "================================"
 #echo "Building ubuntu..."
