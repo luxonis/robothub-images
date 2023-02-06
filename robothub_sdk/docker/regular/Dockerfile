@@ -7,8 +7,10 @@ ENV PYTHONPATH=/lib \
 
 FROM origin as base
 
-RUN apt-get update && \
-    apt-get install -q -y --no-install-recommends python3 python3-pip && \
+RUN echo 'Etc/UTC' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    apt-get update && \
+    apt-get install -q -y --no-install-recommends python3 python3-pip python3-opencv && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -50,7 +52,7 @@ RUN find /usr -depth \
     		\) -exec rm -rf '{}' +
 
 RUN pip3 install --no-deps --no-cache-dir robothub-depthai && \
-    pip3 install --no-cache-dir depthai_sdk
+    pip3 install --no-cache-dir depthai_sdk[record]
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
