@@ -36,7 +36,7 @@ BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 
 #BASE_BUILTIN_TAG="${BASE_TAG}-builtin${TAG_SUFFIX}"
 BASE_MINIMAL_TAG="${BASE_TAG}-minimal${TAG_SUFFIX}"
-#BASE_REGULAR_TAG="${BASE_TAG}-regular${TAG_SUFFIX}"
+BASE_REGULAR_TAG="${BASE_TAG}-regular${TAG_SUFFIX}"
 
 echo "================================"
 echo "Building images..."
@@ -47,7 +47,7 @@ echo "================================"
 echo "Building minimal..."
 echo "=> ${BASE_MINIMAL_TAG}"
 echo "================================"
-# Minimal amd
+# Minimal
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
@@ -65,28 +65,28 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./robothub_sdk/docker/minimal/Dockerfile \
   ./robothub_sdk
 
-#echo "================================"
-#echo "Building ubuntu..."
-#echo "=> ${BASE_UBUNTU_TAG}"
-#echo "================================"
-##Ubuntu
-#DOCKER_BUILDKIT=1 docker buildx \
-#  build \
-#  --builder remotebuilder \
-#  --platform linux/arm64,linux/amd64 \
-#  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-#  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-#  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-#  --label	"com.luxonis.rh.base=ubuntu" \
-#  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-#  --label	"org.opencontainers.image.vendor=Luxonis" \
-#  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-#  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-#  -t ${BASE_UBUNTU_TAG} \
-#  --push \
-#  --file ./robothub_sdk/docker/ubuntu/Dockerfile \
-#  ./robothub_sdk
-#
+echo "================================"
+echo "Building regular..."
+echo "=> ${BASE_REGULAR_TAG}"
+echo "================================"
+# Regular
+DOCKER_BUILDKIT=1 docker buildx \
+  build \
+  --builder remotebuilder \
+  --platform linux/amd64,linux/arm64 \
+  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+  --label "com.luxonis.rh.base=ubuntu22.04" \
+  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
+  --label "org.opencontainers.image.vendor=Luxonis" \
+  --label "org.opencontainers.image.title=RobotHub Perception App Base" \
+  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+  -t "${BASE_REGULAR_TAG}" \
+  --push \
+  --provenance=false \
+  --file ./robothub_sdk/docker/regular/Dockerfile \
+  ./robothub_sdk
+
 #echo "================================"
 #echo "Building ROS..."
 #echo "================================"
