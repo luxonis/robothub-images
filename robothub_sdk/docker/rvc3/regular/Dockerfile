@@ -52,8 +52,8 @@ RUN find /usr -depth \
     		\) -exec rm -rf '{}' +
 
 RUN pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/robothub-depthai.git@rvc3_support && \
-    pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/depthai.git@rvc3_support#subdirectory=depthai_sdk && \
-    pip3 install --no-deps --no-cache-dir av
+    pip3 install --no-cache-dir git+https://github.com/luxonis/depthai.git@rvc3_support#subdirectory=depthai_sdk && \
+    pip3 install --no-cache-dir av
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
