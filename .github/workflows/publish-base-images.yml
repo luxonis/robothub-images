@@ -16,6 +16,7 @@ on:
     branches:
       - main
       - develop
+      - rvc3_support
     paths:
       - '.github/workflows/publish-base-images.yml'
       - 'robothub_sdk/**/*'
