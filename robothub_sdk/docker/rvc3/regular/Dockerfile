@@ -58,8 +58,6 @@ RUN pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/robothu
 RUN apt-get purge -y --auto-remove \
     build-essential \
     cmake \
-    git \
-    wget \
     bzip2 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
