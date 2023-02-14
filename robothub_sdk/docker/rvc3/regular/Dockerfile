@@ -23,7 +23,10 @@ RUN apt-get update && \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 
+RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2
+
 COPY docker/linux_netlink.c /tmp/linux_netlink.c
+
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \
