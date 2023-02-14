@@ -65,7 +65,6 @@ RUN apt-get purge -y --auto-remove \
 FROM base
 
 # Squash the image to save on space
-COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
 
