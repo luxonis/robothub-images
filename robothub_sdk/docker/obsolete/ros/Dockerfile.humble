@@ -1,7 +1,5 @@
 # syntax=docker/dockerfile:experimental
-ARG ROS_VERSION_TAG=humble-ros-base-jammy
-
-FROM ros:${ROS_VERSION_TAG} as base
+FROM ros:humble-ros-base as base
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
@@ -13,7 +11,7 @@ ARG DEPTHAI_VERSION
 # setup timezone
 RUN echo 'Etc/UTC' > /etc/timezone && \
     rm -f /etc/localtime && \
-    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     apt-get update && \
     apt-get install -q -y --no-install-recommends tzdata python3.10 curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
