@@ -57,7 +57,7 @@ RUN apt-get purge -y --auto-remove \
 FROM python:3.10-slim-bullseye
 
 # Squash the image to save on space
-COPY --from=origin /opt/depthai /lib
+COPY --from=origin /lib /lib
 COPY --from=origin /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=origin /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
