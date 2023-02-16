@@ -11,7 +11,7 @@ on:
       - 'containers/podman-ubuntu/**/*'
 
 env:
-  GO_LANG_VERSION: '1.17.13'
+  GO_LANG_VERSION: '1.20.1'
   CONMON_VERSION: '2.1.5'
   CNI_PLUGINS_VERSION: '1.1.1'
   CRUN_VERSION: '1.7'
