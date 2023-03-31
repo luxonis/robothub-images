@@ -11,11 +11,11 @@ This repository contains the Dockerfiles used to build the images for RobotHub a
 ## Making first app
 
 Please visit [RobotHub documentation page](https://docs-beta.luxonis.com/robothub/get-started) for more information about how to make your
-first app.  
+first app.
 
 ## License
 
 This project is licensed under the terms of the MIT license.
 
-
+If you have any questions about Perception Apps or RobotHub, please visit our [Documentation](https://hub-docs.luxonis.com/docs/perception-apps/overview) or ask us directly on the [forums](https://discuss.luxonis.com).
 
