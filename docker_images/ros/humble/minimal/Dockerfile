@@ -14,7 +14,7 @@ RUN apt-get update  && \
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
     git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git
 
-COPY docker/linux_netlink.c /tmp/linux_netlink.c
+COPY docker_images/linux_netlink.c /tmp/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \
