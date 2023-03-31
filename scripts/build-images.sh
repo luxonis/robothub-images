@@ -55,12 +55,12 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+  --label "org.opencontainers.image.description=Based on: Debian\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${BASE_MINIMAL_TAG}" \
   --push \
   --provenance=false \
-  --file ./robothub_sdk/docker/minimal/Dockerfile \
-  ./robothub_sdk
+  --file ./docker_images/minimal/Dockerfile \
+  ./
 
 echo "================================"
 echo "Building regular..."
@@ -81,8 +81,8 @@ DOCKER_BUILDKIT=1 docker buildx \
   -t "${BASE_REGULAR_TAG}" \
   --push \
   --provenance=false \
-  --file ./robothub_sdk/docker/regular/Dockerfile \
-  ./robothub_sdk
+  --file ./docker_images/regular/Dockerfile \
+  ./
 
 echo "================================"
 echo "Building ros2humble minimal..."
@@ -104,8 +104,8 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${ROS_HUMBLE_MINIMAL_TAG}" \
   --push \
-  --file ./robothub_sdk/docker/ros/humble/minimal/Dockerfile \
-  ./robothub_sdk
+  --file ./docker_images/ros/humble/minimal/Dockerfile \
+  ./
 
 echo "================================"
 echo "Building ros2humble regular..."
@@ -127,8 +127,8 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${ROS_HUMBLE_REGULAR_TAG}" \
   --push \
-  --file ./robothub_sdk/docker/ros/humble/regular/Dockerfile \
-  ./robothub_sdk
+  --file ./docker_images/ros/humble/regular/Dockerfile \
+  ./
 
 echo "================================"
 echo "All done!"

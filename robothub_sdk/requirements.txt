@@ -1,4 +1,0 @@
-depthai
-paho-mqtt
-paho-socket
-http-router

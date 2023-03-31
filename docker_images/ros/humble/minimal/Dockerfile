@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM python:3.10-slim-bullseye as origin
+FROM ros:humble-ros-core as origin
 
 # Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
@@ -7,7 +7,7 @@ ENV PYTHONPATH=/lib \
     PYTHONDONTWRITEBYTECODE=1
 
 RUN apt-get update  && \
-    apt-get install -q -y --no-install-recommends git ca-certificates wget bzip2 build-essential cmake && \
+    apt-get install -q -y --no-install-recommends git ca-certificates wget python3-pip bzip2 build-essential cmake && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -39,7 +39,7 @@ RUN find /usr -depth \
     			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
     		\) -exec rm -rf '{}' +
 
-RUN pip3 install --no-deps --no-cache-dir robothub-depthai && \
+RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-deps --no-cache-dir depthai_sdk && \
     pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow
 
@@ -52,12 +52,12 @@ RUN apt-get purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-FROM python:3.10-slim-bullseye
+FROM ros:humble-ros-core
 
 # Squash the image to save on space
 COPY --from=origin /opt/depthai /lib
 COPY --from=origin /tmp/libusb-1.0.so /lib/libusb-1.0.so
-COPY --from=origin /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+COPY --from=origin /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
 
 RUN echo "$(ls /usr/local/lib/python3.10/site-packages)"
 RUN echo "print('App not installed')" > /run.py

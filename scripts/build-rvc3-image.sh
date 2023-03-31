@@ -52,13 +52,13 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "com.luxonis.rh.base=python3.10-slim-bullseye" \
   --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
   --label "org.opencontainers.image.vendor=Luxonis" \
-  --label "org.opencontainers.image.title=RobotHub Perception App Base" \
+  --label "org.opencontainers.image.title=RobotHub Perception RVC3 App Base" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
   -t "${BASE_RVC3_TAG}" \
   --push \
   --provenance=false \
-  --file ./robothub_sdk/docker/rvc3/Dockerfile \
-  ./robothub_sdk
+  --file ./docker_images/rvc3/Dockerfile \
+  ./
 
 echo "================================"
 echo "All done!"
