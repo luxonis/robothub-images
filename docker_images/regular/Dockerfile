@@ -51,7 +51,7 @@ RUN find /usr -depth \
     			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
     		\) -exec rm -rf '{}' +
 
-RUN pip3 install --no-deps --no-cache-dir robothub-depthai && \
+RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-cache-dir depthai_sdk[record]
 
 RUN apt-get purge -y --auto-remove \
