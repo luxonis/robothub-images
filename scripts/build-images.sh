@@ -32,6 +32,7 @@ BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 
 BASE_MINIMAL_TAG="${BASE_TAG}-minimal${TAG_SUFFIX}"
 BASE_REGULAR_TAG="${BASE_TAG}-regular${TAG_SUFFIX}"
+BASE_EXP_TAG="${BASE_TAG}-experimental${TAG_SUFFIX}"
 ROS_HUMBLE_MINIMAL_TAG="${BASE_TAG}-ros2humble-minimal${TAG_SUFFIX}"
 ROS_HUMBLE_REGULAR_TAG="${BASE_TAG}-ros2humble-regular${TAG_SUFFIX}"
 
@@ -41,10 +42,10 @@ echo "DEPTHAI_VERSION=${DEPTHAI_VERSION}"
 echo "================================"
 
 echo "================================"
-echo "Building minimal..."
-echo "=> ${BASE_MINIMAL_TAG}"
+echo "Building experimental..."
+echo "=> ${BASE_EXP_TAG}"
 echo "================================"
-# Minimal
+# Experimental
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
@@ -56,78 +57,10 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub Perception App Base" \
   --label "org.opencontainers.image.description=Based on: Debian\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_MINIMAL_TAG}" \
+  -t "${BASE_EXP_TAG}" \
   --push \
   --provenance=false \
-  --file ./docker_images/minimal/Dockerfile \
-  ./
-
-echo "================================"
-echo "Building regular..."
-echo "=> ${BASE_REGULAR_TAG}"
-echo "================================"
-# Regular
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/amd64,linux/arm64 \
-  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label "com.luxonis.rh.base=ubuntu22.04" \
-  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label "org.opencontainers.image.vendor=Luxonis" \
-  --label "org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${BASE_REGULAR_TAG}" \
-  --push \
-  --provenance=false \
-  --file ./docker_images/regular/Dockerfile \
-  ./
-
-echo "================================"
-echo "Building ros2humble minimal..."
-echo "=> ${ROS_HUMBLE_MINIMAL_TAG}"
-echo "================================"
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ros2/humble" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${ROS_HUMBLE_MINIMAL_TAG}" \
-  --push \
-  --file ./docker_images/ros/humble/minimal/Dockerfile \
-  ./
-
-echo "================================"
-echo "Building ros2humble regular..."
-echo "=> ${ROS_HUMBLE_REGULAR_TAG}"
-echo "================================"
-
-DOCKER_BUILDKIT=1 docker buildx \
-  build \
-  --builder remotebuilder \
-  --platform linux/arm64,linux/amd64 \
-  --build-arg "ROS_VERSION_TAG=humble-ros-base-jammy" \
-  --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
-  --label	"com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
-  --label	"com.luxonis.rh.base=ros2/humble" \
-  --label	"org.opencontainers.image.version=${IMAGE_VERSION}" \
-  --label	"org.opencontainers.image.vendor=Luxonis" \
-  --label	"org.opencontainers.image.title=RobotHub Perception App Base" \
-  --label "org.opencontainers.image.description=Based on: ROS-humble/Ubuntu-22.04\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${ROS_HUMBLE_REGULAR_TAG}" \
-  --push \
-  --file ./docker_images/ros/humble/regular/Dockerfile \
+  --file ./docker_images/experimental/Dockerfile \
   ./
 
 echo "================================"
