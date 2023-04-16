@@ -59,6 +59,8 @@ RUN git clone --branch "experimental" https://github.com/luxonis/robothub-oak rh
 
 RUN rm -rf rh_oak_temporary
 
+RUN pip3 install PyTurboJPEG==1.6.4 marshmallow==3.17.0 distinctipy xmltodict numpy opencv-contrib-python blobconverter pytube
+
 RUN apt-get purge -y --auto-remove \
     build-essential \
     cmake \
