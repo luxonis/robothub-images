@@ -59,7 +59,7 @@ RUN git clone --branch "experimental" https://github.com/luxonis/robothub-oak rh
 
 RUN rm -rf rh_oak_temporary
 
-RUN pip3 install PyTurboJPEG==1.6.4 marshmallow==3.17.0 distinctipy xmltodict numpy opencv-contrib-python blobconverter pytube packaging PyYAML boto3 botocore==1.29.98 s3transfer==0.6.0 jmespath==1.0.1 certifi==2020.6.20 idna==3.3 charset-normalizer urllib3==1.26.5 python-dateutil==2.8.1
+RUN pip3 install av PyTurboJPEG==1.6.4 marshmallow==3.17.0 distinctipy xmltodict numpy opencv-contrib-python blobconverter pytube packaging PyYAML boto3 botocore==1.29.98 s3transfer==0.6.0 jmespath==1.0.1 certifi==2020.6.20 idna==3.3 charset-normalizer urllib3==1.26.5 python-dateutil==2.8.1
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
