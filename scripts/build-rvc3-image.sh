@@ -32,6 +32,7 @@ fi
 BASE_PACKAGE="ghcr.io/luxonis/robothub-app-v2"
 BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 BASE_RVC3_TAG="${BASE_TAG}-rvc3${TAG_SUFFIX}"
+BASE_ROS2HUMBLE_RVC3_TAG="${BASE_TAG}-ros2humble-rvc3${TAG_SUFFIX}"
 
 echo "================================"
 echo "Building images..."
@@ -58,6 +59,28 @@ DOCKER_BUILDKIT=1 docker buildx \
   --push \
   --provenance=false \
   --file ./docker_images/rvc3/Dockerfile \
+  ./
+
+echo "================================"
+echo "Building ROS Humble..."
+echo "=> ${BASE_ROS2HUMBLE_RVC3_TAG}"
+echo "================================"
+# Minimal
+DOCKER_BUILDKIT=1 docker buildx \
+  build \
+  --builder remotebuilder \
+  --platform linux/amd64,linux/arm64 \
+  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+  --label "com.luxonis.rh.base=ros:humble-ros-base" \
+  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
+  --label "org.opencontainers.image.vendor=Luxonis" \
+  --label "org.opencontainers.image.title=RobotHub Perception ROS2 Humble RVC3 App Base" \
+  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+  -t "${BASE_ROS2HUMBLE_RVC3_TAG}" \
+  --push \
+  --provenance=false \
+  --file ./docker_images/ros/humble/rvc3/Dockerfile \
   ./
 
 echo "================================"
