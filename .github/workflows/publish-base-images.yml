@@ -10,7 +10,7 @@ on:
         type: string
 
   repository_dispatch:
-    types: [depthai-python-release]
+    types: [depthai-python-release, robothub-oak-release]
 
   push:
     branches:
