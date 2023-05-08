@@ -18,8 +18,8 @@ on:
       - develop
     paths:
       - '.github/workflows/publish-base-images.yml'
-      - 'robothub_sdk/**/*'
-      - 'scripts/**/*'
+      - '**/*'
+      - '**/*'
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
