@@ -1,20 +1,32 @@
 # syntax=docker/dockerfile:experimental
-FROM python:3.10-slim-bullseye as origin
+FROM ubuntu:22.04 as origin
 
-# Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-RUN apt-get update  && \
-    apt-get install -q -y --no-install-recommends git ca-certificates wget bzip2 build-essential cmake && \
+ARG DEBIAN_FRONTEND=noninteractive
+ARG OPENCV_VERSION=4.7.0
+
+FROM origin as base
+
+# Install Python 3
+RUN apt-get update -qq && \
+    apt-get install -qq -y --no-install-recommends python3 python3-pip && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
+FROM base as build
+
+RUN apt-get update  && \
+    apt-get install -q -y --no-install-recommends git ca-certificates wget bzip2 build-essential cmake python3-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
+RUN wget https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2 -O libusb.tar.bz2 && \
     git clone --depth=1 --branch "rvc3_develop" --recurse-submodules https://github.com/luxonis/depthai-python.git
 
-COPY docker_images/linux_netlink.c /tmp/linux_netlink.c
+RUN wget -O /tmp/linux_netlink.c https://raw.githubusercontent.com/luxonis/robothub-images/main/docker_images/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \
@@ -42,7 +54,7 @@ RUN find /usr -depth \
 
 RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-deps --no-cache-dir depthai_sdk && \
-    pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow
+    pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow opencv-contrib-python-headless
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
@@ -53,14 +65,9 @@ RUN apt-get purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-FROM python:3.10-slim-bullseye
+FROM base
 
 # Squash the image to save on space
-COPY --from=origin /opt/depthai /lib
-COPY --from=origin /tmp/libusb-1.0.so /lib/libusb-1.0.so
-COPY --from=origin /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
-
-RUN echo "$(ls /usr/local/lib/python3.10/site-packages)"
-RUN echo "print('App not installed')" > /run.py
-
-CMD ["python3", "/run.py"]
+COPY --from=build /opt/depthai /lib
+COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
+COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
