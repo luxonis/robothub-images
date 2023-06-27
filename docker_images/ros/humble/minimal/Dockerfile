@@ -11,10 +11,10 @@ RUN apt-get update  && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
+RUN wget https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2 -O libusb.tar.bz2 && \
     git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git
 
-COPY docker_images/linux_netlink.c /tmp/linux_netlink.c
+RUN wget -O /tmp/linux_netlink.c https://raw.githubusercontent.com/luxonis/robothub-images/main/docker_images/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \
@@ -41,7 +41,8 @@ RUN find /usr -depth \
 
 RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-deps --no-cache-dir depthai_sdk && \
-    pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow
+    pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy \
+        xmltodict marshmallow opencv-contrib-python-headless
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
@@ -58,8 +59,3 @@ FROM ros:humble-ros-core
 COPY --from=origin /opt/depthai /lib
 COPY --from=origin /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=origin /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
-
-RUN echo "$(ls /usr/local/lib/python3.10/site-packages)"
-RUN echo "print('App not installed')" > /run.py
-
-CMD ["python3", "/run.py"]
