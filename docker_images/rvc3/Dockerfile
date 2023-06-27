@@ -54,7 +54,8 @@ RUN find /usr -depth \
 
 RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-deps --no-cache-dir depthai_sdk && \
-    pip3 install --no-cache-dir --only-binary=:all: distinctipy requests numpy xmltodict marshmallow opencv-contrib-python-headless
+    pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy \
+        xmltodict marshmallow opencv-contrib-python-headless av blobconverter
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
