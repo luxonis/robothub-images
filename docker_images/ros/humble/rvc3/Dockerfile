@@ -22,11 +22,11 @@ RUN apt-get update  && \
     rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Download libusb and depthai-python
-RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
+RUN wget https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2 -O libusb.tar.bz2 && \
     git clone --depth=1 --branch "rvc3_develop" --recurse-submodules https://github.com/luxonis/depthai-python.git
 
 # Patch and build libusb
-COPY docker_images/linux_netlink.c /tmp/linux_netlink.c
+RUN wget -O /tmp/linux_netlink.c https://raw.githubusercontent.com/luxonis/robothub-images/main/docker_images/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \

@@ -8,7 +8,7 @@ ENV PYTHONPATH=/lib \
 FROM origin as base
 
 RUN apt-get update && \
-    apt-get install -q -y --no-install-recommends python3-pip python3-opencv && \
+    apt-get install -q -y --no-install-recommends python3-pip && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -21,10 +21,10 @@ RUN apt-get update && \
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
     update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 
-RUN wget https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.tar.bz2 -O libusb.tar.bz2 && \
+RUN wget https://github.com/libusb/libusb/releases/download/v1.0.26/libusb-1.0.26.tar.bz2 -O libusb.tar.bz2 && \
     git clone --depth=1 --recurse-submodules https://github.com/luxonis/depthai-python.git
 
-COPY docker_images/linux_netlink.c /tmp/linux_netlink.c
+RUN wget -O /tmp/linux_netlink.c https://raw.githubusercontent.com/luxonis/robothub-images/main/docker_images/linux_netlink.c
 RUN tar xf libusb.tar.bz2 \
     && cd libusb-* \
     && rm ./libusb/os/linux_netlink.c \
@@ -50,7 +50,10 @@ RUN find /usr -depth \
     		\) -exec rm -rf '{}' +
 
 RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
-    pip3 install --no-cache-dir depthai_sdk[record]
+    pip3 install --no-deps --no-cache-dir depthai_sdk && \
+    pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy \
+        xmltodict marshmallow opencv-contrib-python-headless av blobconverter
+
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
@@ -67,7 +70,3 @@ FROM base
 COPY --from=build /opt/depthai /lib
 COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
-
-RUN echo "print('App not installed')" > /run.py
-
-CMD ["python3", "/run.py"]
