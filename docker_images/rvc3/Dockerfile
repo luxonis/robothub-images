@@ -55,7 +55,7 @@ RUN find /usr -depth \
 RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/depthai.git@rvc3_develop#subdirectory=depthai_sdk && \
     pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy \
-        xmltodict marshmallow opencv-contrib-python-headless av blobconverter
+        xmltodict marshmallow opencv-contrib-python-headless av blobconverter distinctipy
 
 RUN apt-get purge -y --auto-remove \
     build-essential \
