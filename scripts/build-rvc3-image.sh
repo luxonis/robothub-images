@@ -5,14 +5,6 @@ TAG_SUFFIX=""
 
 DEPTHAI_BRANCH="rvc3_develop"
 
-if [[ -n "${EXTERNAL_TRIGGER_REF}" ]]; then
-  DEPTHAI_BRANCH="${EXTERNAL_TRIGGER_REF##*/}"
-elif [[ -z "${DEPTHAI_BRANCH}" ]]; then
-  DEPTHAI_BRANCH="main"
-else
-  TAG_SUFFIX="${TAG_SUFFIX}-custom"
-fi
-
 if [[ "$GITHUB_REF_NAME" != "main" ]]; then
   TAG_SUFFIX="${TAG_SUFFIX}-dev"
 fi
@@ -33,6 +25,8 @@ BASE_PACKAGE="ghcr.io/luxonis/robothub-app-v2"
 BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 BASE_RVC3_TAG="${BASE_TAG}-rvc3${TAG_SUFFIX}"
 BASE_ROS2HUMBLE_RVC3_TAG="${BASE_TAG}-ros2humble-rvc3${TAG_SUFFIX}"
+RAE_PROV_TAG="${BASE_TAG}-rae-provisioning${TAG_SUFFIX}"
+RAE_BUILTIN_TAG="${BASE_TAG}-rae-builtin${TAG_SUFFIX}"
 
 echo "================================"
 echo "Building images..."
@@ -81,6 +75,46 @@ DOCKER_BUILDKIT=1 docker buildx \
   --push \
   --provenance=false \
   --file ./docker_images/ros/humble/rvc3/Dockerfile \
+  ./
+
+echo "================================"
+echo "Building RAE..."
+echo "=> ${RAE_PROV_TAG}"
+DOCKER_BUILDKIT=1 docker buildx \
+  build \
+  --builder remotebuilder \
+  --platform linux/amd64,linux/arm64 \
+  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+  --label "com.luxonis.rh.base=ubuntu22.04" \
+  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
+  --label "org.opencontainers.image.vendor=Luxonis" \
+  --label "org.opencontainers.image.title=RobotHub RAE provisioning app image" \
+  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+  -t "${RAE_PROV_TAG}" \
+  --push \
+  --provenance=false \
+  --file ./docker_images/rae/provisioning_app/Dockerfile \
+  ./
+
+echo "=> ${RAE_PROV_TAG}"
+echo "================================"
+
+DOCKER_BUILDKIT=1 docker buildx \
+  build \
+  --builder remotebuilder \
+  --platform linux/amd64,linux/arm64 \
+  --label "com.luxonis.rh.depthai=${DEPTHAI_VERSION}" \
+  --label "com.luxonis.rh.depthai.branch=${DEPTHAI_BRANCH}" \
+  --label "com.luxonis.rh.base=ubuntu22.04" \
+  --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
+  --label "org.opencontainers.image.vendor=Luxonis" \
+  --label "org.opencontainers.image.title=RobotHub RAE builtin app image" \
+  --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
+  -t "${RAE_PROV_TAG}" \
+  --push \
+  --provenance=false \
+  --file ./docker_images/rae/builtin_app/Dockerfile \
   ./
 
 echo "================================"
