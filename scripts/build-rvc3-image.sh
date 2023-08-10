@@ -80,6 +80,8 @@ DOCKER_BUILDKIT=1 docker buildx \
 echo "================================"
 echo "Building RAE..."
 echo "=> ${RAE_PROV_TAG}"
+echo "================================"
+
 DOCKER_BUILDKIT=1 docker buildx \
   build \
   --builder remotebuilder \
@@ -97,7 +99,9 @@ DOCKER_BUILDKIT=1 docker buildx \
   --file ./docker_images/rae/provisioning_app/Dockerfile \
   ./
 
-echo "=> ${RAE_PROV_TAG}"
+echo "================================"
+echo "Building RAE..."
+echo "=> ${RAE_BUILTIN_TAG}"
 echo "================================"
 
 DOCKER_BUILDKIT=1 docker buildx \
@@ -111,7 +115,7 @@ DOCKER_BUILDKIT=1 docker buildx \
   --label "org.opencontainers.image.vendor=Luxonis" \
   --label "org.opencontainers.image.title=RobotHub RAE builtin app image" \
   --label "org.opencontainers.image.description=Based on: Ubuntu\nDepthAI branch: ${DEPTHAI_BRANCH}\nDepthAI version: ${DEPTHAI_VERSION}" \
-  -t "${RAE_PROV_TAG}" \
+  -t "${RAE_BUILTIN_TAG}" \
   --push \
   --provenance=false \
   --file ./docker_images/rae/builtin_app/Dockerfile \
