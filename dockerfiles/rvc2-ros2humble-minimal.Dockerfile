@@ -10,8 +10,7 @@ FROM origin as base
 # Install pip
 RUN apt-get update -qq && \
     apt-get install -qq -y --no-install-recommends python3-pip && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+    rm -rf /var/lib/apt/lists/*
 
 FROM base as build
 
@@ -20,8 +19,7 @@ ARG TARGETARCH
 # Install dependencies
 RUN apt-get update -qq  && \
     apt-get install -qq -y --no-install-recommends ca-certificates wget && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+    rm -rf /var/lib/apt/lists/*
 
 # Install libusb
 COPY install-libusb.sh /tmp/
@@ -35,8 +33,7 @@ RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.lu
 
 RUN apt-get purge -y --auto-remove \
     wget \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
 FROM base
 
