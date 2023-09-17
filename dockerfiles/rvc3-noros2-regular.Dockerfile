@@ -12,7 +12,7 @@ FROM origin as base
 
 # Install Python 3
 RUN apt-get update -qq && \
-    apt-get install -qq -y --no-install-recommends python3 python3-pip && \
+    apt-get install -qq --no-install-recommends python3 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 FROM base as build
@@ -21,7 +21,7 @@ ARG TARGETARCH
 
 # Install dependencies
 RUN apt-get update -qq  && \
-    apt-get install -qq -y --no-install-recommends ca-certificates wget git && \
+    apt-get install -qq --no-install-recommends ca-certificates wget git && \
     rm -rf /var/lib/apt/lists/*
 
 # Install libusb
