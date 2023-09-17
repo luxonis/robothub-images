@@ -22,7 +22,7 @@ ARG TARGETARCH
 
 # Install dependencies
 RUN apt-get update -qq  && \
-    apt-get install -qq -y --no-install-recommends git ca-certificates wget bzip2 build-essential cmake python3-dev && \
+    apt-get install -qq -y --no-install-recommends ca-certificates wget git && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -30,42 +30,19 @@ RUN apt-get update -qq  && \
 COPY install-libusb.sh /tmp/
 RUN /tmp/install-libusb.sh
 
-RUN git clone --depth=1 --branch "rvc3_develop" --recurse-submodules https://github.com/luxonis/depthai-python.git
-
-RUN pip3 install --no-cache-dir --only-binary=:all: numpy
-RUN cd depthai-python \
-    && cmake -H. -B build -D CMAKE_BUILD_TYPE=Release -D DEPTHAI_ENABLE_BACKWARD=OFF \
-    && cmake --build build --parallel $(nproc)
-
-# Package dependencies
-RUN mkdir -p /opt/depthai \
-    && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
-    && mv /depthai-python/build/depthai*.so /opt/depthai
-
-# Clear python compiled artifacts
-RUN find /usr -depth \
-    		\( \
-    			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-    			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
-    		\) -exec rm -rf '{}' +
-
-RUN pip3 install --no-deps --no-cache-dir robothub-oak && \
+# Install luxonis packages and dependencies
+RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904 && \
     pip3 install --no-deps --no-cache-dir git+https://github.com/luxonis/depthai.git@rvc3_develop#subdirectory=depthai_sdk && \
-    pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy \
-        xmltodict marshmallow opencv-contrib-python-headless av blobconverter distinctipy
+    pip3 install --no-deps --no-cache-dir robothub-oak && \
+    pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy xmltodict marshmallow opencv-contrib-python-headless av blobconverter
 
 RUN apt-get purge -y --auto-remove \
-    build-essential \
-    cmake \
-    git \
-    wget \
-    bzip2 \
+    wget git \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 FROM base
 
 # Squash the image to save on space
-COPY --from=build /opt/depthai /lib
 COPY --from=build /lib/libusb-1.0.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
