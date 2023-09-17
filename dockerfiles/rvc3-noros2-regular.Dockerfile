@@ -10,7 +10,8 @@ ARG OPENCV_VERSION=4.7.0
 # Install python3
 RUN apt-get update -qq && \
     apt-get install -qq --no-install-recommends python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    python3 -m pip install --upgrade pip setuptools wheel
 
 FROM base as build
 
