@@ -1,5 +1,7 @@
 FROM ros:humble-ros-base as base
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
@@ -12,6 +14,7 @@ RUN apt-get update -qq && \
 
 FROM base as build
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 
 # Install dependencies
