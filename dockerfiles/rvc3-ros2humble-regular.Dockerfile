@@ -4,9 +4,9 @@ ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-# Install pip
+# Install python3
 RUN apt-get update -qq && \
-    apt-get install -qq --no-install-recommends python3-pip && \
+    apt-get install -qq --no-install-recommends python3 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 FROM base as build
