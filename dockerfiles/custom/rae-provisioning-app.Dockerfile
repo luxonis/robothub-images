@@ -30,10 +30,6 @@ RUN /tmp/install-libusb.sh
 RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904 && \
     pip3 install --no-cache-dir --only-binary=:all: opencv-contrib-python-headless
 
-RUN apt-get purge -y --auto-remove \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
-
 FROM base
 
 # Squash the image to save on space

@@ -28,10 +28,6 @@ RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.lu
     pip3 install --no-deps --no-cache-dir robothub-oak && \
     pip3 install --no-cache-dir --only-binary=:all: sentry-sdk requests numpy xmltodict marshmallow opencv-contrib-python-headless av blobconverter
 
-RUN apt-get purge -y --auto-remove \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
-
 FROM base
 
 # Squash the image to save on space
