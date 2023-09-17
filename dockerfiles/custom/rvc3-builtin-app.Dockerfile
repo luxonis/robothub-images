@@ -5,7 +5,6 @@ ENV PYTHONPATH=/lib \
     PYTHONDONTWRITEBYTECODE=1
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG OPENCV_VERSION=4.7.0
 
 # Install python3
 RUN apt-get update -qq && \
