@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:experimental
 FROM ros:humble-ros-core as base
 
 ENV PYTHONPATH=/lib \
