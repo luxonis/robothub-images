@@ -1,11 +1,9 @@
 # syntax=docker/dockerfile:experimental
-FROM ros:humble-ros-core as origin
+FROM ros:humble-ros-core as base
 
 ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
-
-FROM origin as base
 
 # Install pip
 RUN apt-get update -qq && \

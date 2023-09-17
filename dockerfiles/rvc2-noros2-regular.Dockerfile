@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM ubuntu:22.04 as origin
+FROM ubuntu:22.04 as base
 
 ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
@@ -7,8 +7,6 @@ ENV PYTHONPATH=/lib \
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG OPENCV_VERSION=4.7.0
-
-FROM origin as base
 
 # Install Python 3
 RUN apt-get update -qq && \
