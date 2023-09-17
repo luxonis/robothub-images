@@ -22,9 +22,6 @@ RUN apt-get update -qq  && \
     apt-get install -qq --no-install-recommends ca-certificates wget && \
     rm -rf /var/lib/apt/lists/*
 
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1 && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
-
 # Install libusb
 COPY install-libusb.sh /tmp/
 RUN /tmp/install-libusb.sh
