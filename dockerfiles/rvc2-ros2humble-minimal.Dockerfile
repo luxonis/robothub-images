@@ -1,13 +1,23 @@
 # syntax=docker/dockerfile:experimental
 FROM ros:humble-ros-core as origin
 
-# Python will buffer output in case of non interactive terminals and we don't want that, because it delays logs
 ENV PYTHONPATH=/lib \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
+FROM origin as base
+
+# Install pip
+RUN apt-get update -qq && \
+    apt-get install -qq -y --no-install-recommends python3-pip && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
+FROM base as build
+
+# Install dependencies
 RUN apt-get update  && \
-    apt-get install -q -y --no-install-recommends git ca-certificates wget python3-pip bzip2 build-essential cmake && \
+    apt-get install -q -y --no-install-recommends git ca-certificates wget bzip2 build-essential cmake && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
@@ -32,7 +42,7 @@ RUN mkdir -p /opt/depthai \
     && for dep in $(ldd /depthai-python/build/depthai*.so 2>/dev/null | awk 'BEGIN{ORS=" "}$1 ~/^\//{print $1}$3~/^\//{print $3}' | sed 's/,$/\n/'); do cp "$dep" /opt/depthai; done \
     && mv /depthai-python/build/depthai*.so /opt/depthai
 
-# Clear Python compiled artifacts
+# Clear python compiled artifacts
 RUN find /usr -depth \
     		\( \
     			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
@@ -53,9 +63,9 @@ RUN apt-get purge -y --auto-remove \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-FROM ros:humble-ros-core
+FROM base
 
 # Squash the image to save on space
-COPY --from=origin /opt/depthai /lib
-COPY --from=origin /tmp/libusb-1.0.so /lib/libusb-1.0.so
-COPY --from=origin /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
+COPY --from=build /opt/depthai /lib
+COPY --from=build /tmp/libusb-1.0.so /lib/libusb-1.0.so
+COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
