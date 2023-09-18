@@ -4,9 +4,6 @@ concurrency: aws-worker
 on:
   workflow_dispatch:
 
-  repository_dispatch:
-    types: [depthai-python-release, robothub-oak-release, depthai-sdk-release]
-
   push:
     branches:
       - main
@@ -17,7 +14,6 @@ env:
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
   AWS_DEFAULT_REGION: us-east-1
-  EXTERNAL_TRIGGER_REF: ${{ github.event.client_payload.ref }}
 
 jobs:
   build:
