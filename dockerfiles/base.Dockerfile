@@ -19,6 +19,7 @@ FROM base AS build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 ARG ROBOTICS_VISION_CORE
+ARG VARIANT
 
 # Install dependencies
 RUN apt-get update -qq  && \
@@ -34,7 +35,8 @@ COPY install-luxonis-packages-${ROBOTICS_VISION_CORE}.sh /tmp/
 RUN /tmp/install-luxonis-packages-${ROBOTICS_VISION_CORE}.sh
 
 # Install python3 packages
-RUN pip3 install --no-cache-dir --only-binary=:all: sentry-sdk distinctipy requests numpy xmltodict marshmallow opencv-contrib-python-headless av blobconverter
+COPY requirements-${VARIANT}.txt /tmp/
+RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-${VARIANT}.txt
 
 FROM base
 
