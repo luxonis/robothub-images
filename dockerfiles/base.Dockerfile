@@ -1,4 +1,6 @@
-FROM ubuntu:22.04 AS base
+ARG BASE_IMAGE
+
+FROM ${BASE_IMAGE} AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
