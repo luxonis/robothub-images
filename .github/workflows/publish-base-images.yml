@@ -3,11 +3,6 @@ concurrency: aws-worker
 
 on:
   workflow_dispatch:
-    inputs:
-      depthaiBranch:
-        description: 'DepthAI Git branch'
-        required: true
-        type: string
 
   repository_dispatch:
     types: [depthai-python-release, robothub-oak-release, depthai-sdk-release]
@@ -26,7 +21,6 @@ env:
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
   AWS_DEFAULT_REGION: us-east-1
-  DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
   EXTERNAL_TRIGGER_REF: ${{ github.event.client_payload.ref }}
 
 jobs:
