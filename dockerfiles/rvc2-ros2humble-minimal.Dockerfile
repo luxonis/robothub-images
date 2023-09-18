@@ -1,4 +1,4 @@
-FROM ros:humble-ros-core as base
+FROM ros:humble-ros-core AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -12,7 +12,7 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists/* && \
     python3 -m pip install --upgrade pip setuptools wheel
 
-FROM base as build
+FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH

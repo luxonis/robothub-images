@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as base
+FROM ubuntu:22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -12,7 +12,7 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists/* && \
     python3 -m pip install --upgrade pip setuptools wheel
 
-FROM base as build
+FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
