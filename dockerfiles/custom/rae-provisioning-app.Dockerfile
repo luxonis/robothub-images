@@ -16,6 +16,7 @@ FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
+ARG DEPTHAI_VERSION
 
 # Install dependencies
 RUN apt-get update -qq  && \
@@ -27,7 +28,7 @@ COPY install-libusb.sh /tmp/
 RUN /tmp/install-libusb.sh
 
 # Install luxonis packages and dependencies
-RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904 && \
+RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==${DEPTHAI_VERSION} && \
     pip3 install --no-cache-dir --only-binary=:all: opencv-contrib-python-headless
 
 FROM base
