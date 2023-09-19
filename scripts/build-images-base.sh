@@ -32,6 +32,7 @@ for elem in "${elems[@]}"; do
         echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
         continue
     fi
+    ROBOTHUB_OAK_VERSION="2.1.0"
 
     TAG="${BASE_TAG}-${ROBOTICS_VISION_CORE}-${VARIANT}"
     if [[ "${BASE_IMAGE}" == "ros:humble-ros-core" || "${BASE_IMAGE}" == "ros:humble-ros-base" ]]; then
@@ -43,6 +44,7 @@ for elem in "${elems[@]}"; do
     echo "Building '${TAG}'..."
     echo "=> Depthai version: ${DEPTHAI_VERSION}"
     echo "=> Depthai SDK version: ${DEPTHAI_SDK_VERSION}"
+    echo "=> RobotHub OAK version: ${ROBOTHUB_OAK_VERSION}"
     echo "================================"
 
     docker buildx build \
@@ -52,6 +54,7 @@ for elem in "${elems[@]}"; do
         --build-arg "ROBOTICS_VISION_CORE=${ROBOTICS_VISION_CORE}" \
         --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
         --build-arg "DEPTHAI_SDK_VERSION=${DEPTHAI_SDK_VERSION}" \
+        --build-arg "ROBOTHUB_OAK_VERSION=${ROBOTHUB_OAK_VERSION}" \
         --build-arg "VARIANT=${VARIANT}" \
         --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
         --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
@@ -61,6 +64,7 @@ for elem in "${elems[@]}"; do
         --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
         --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
         --label "com.luxonis.rh.depthai-sdk.version=${DEPTHAI_SDK_VERSION}" \
+        --label "com.luxonis.rh.robothub-oak.version=${ROBOTHUB_OAK_VERSION}" \
         --tag "${TAG}" \
         --push \
         --provenance=false \
