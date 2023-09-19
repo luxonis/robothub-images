@@ -15,23 +15,20 @@ RUN apt-get update -qq && \
 FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG TARGETARCH
 ARG DEPTHAI_VERSION
 
 # Install dependencies
 RUN apt-get update -qq  && \
-    apt-get install -qq --no-install-recommends ca-certificates wget && \
+    apt-get install -qq --no-install-recommends ca-certificates git && \
     rm -rf /var/lib/apt/lists/*
-
-# Install libusb
-COPY install-libusb.sh /tmp/
-RUN /tmp/install-libusb.sh
 
 # Install luxonis packages and dependencies
 RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==${DEPTHAI_VERSION}
 
 FROM base
 
+ARG TARGETARCH
+
 # Squash the image to save on space
-COPY --from=build /lib/libusb-1.0.so /lib/libusb-1.0.so
+COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
