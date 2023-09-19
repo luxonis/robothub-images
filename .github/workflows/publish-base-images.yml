@@ -52,7 +52,6 @@ jobs:
         run: |
           ./scripts/setup-remote-builder.sh
           ./scripts/build-images.sh
-          ./scripts/build-rvc3-image.sh
       - name: Terminate instances
         if: ${{ always() && steps.launch_instances.outcome == 'success' }}
         env:
