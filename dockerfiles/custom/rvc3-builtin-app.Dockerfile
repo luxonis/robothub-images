@@ -17,11 +17,6 @@ FROM base AS build
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DEPTHAI_VERSION
 
-# Install dependencies
-RUN apt-get update -qq  && \
-    apt-get install -qq --no-install-recommends ca-certificates git && \
-    rm -rf /var/lib/apt/lists/*
-
 # Install luxonis packages and dependencies
 RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==${DEPTHAI_VERSION}
 
