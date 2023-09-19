@@ -21,10 +21,13 @@ for elem in "${elems[@]}"; do
 
     # Derive remaining parameters
     DEPTHAI_VERSION=""
+    DEPTHAI_SDK_VERSION=""
     if [[ "${ROBOTICS_VISION_CORE}" == "rvc2" ]]; then
         DEPTHAI_VERSION="2.22.0.0"
+        DEPTHAI_SDK_VERSION="1.13.1"
     elif [[ "${ROBOTICS_VISION_CORE}" == "rvc3" ]]; then
         DEPTHAI_VERSION="2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904"
+        DEPTHAI_SDK_VERSION="d188eec84fded7ea10a3dc124db7da433a2a3578"
     else
         echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
         continue
@@ -39,6 +42,7 @@ for elem in "${elems[@]}"; do
     echo "================================"
     echo "Building '${TAG}'..."
     echo "=> Depthai version: ${DEPTHAI_VERSION}"
+    echo "=> Depthai SDK version: ${DEPTHAI_SDK_VERSION}"
     echo "================================"
 
     docker buildx build \
@@ -47,6 +51,7 @@ for elem in "${elems[@]}"; do
         --build-arg "BASE_IMAGE=ubuntu:22.04" \
         --build-arg "ROBOTICS_VISION_CORE=${ROBOTICS_VISION_CORE}" \
         --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
+        --build-arg "DEPTHAI_SDK_VERSION=${DEPTHAI_SDK_VERSION}" \
         --build-arg "VARIANT=${VARIANT}" \
         --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
         --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
@@ -55,6 +60,7 @@ for elem in "${elems[@]}"; do
         --label "org.opencontainers.image.title=RobotHub App base image" \
         --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
         --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
+        --label "com.luxonis.rh.depthai-sdk.version=${DEPTHAI_SDK_VERSION}" \
         --tag "${TAG}" \
         --push \
         --provenance=false \
