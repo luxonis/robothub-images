@@ -18,7 +18,6 @@ FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG ROBOTICS_VISION_CORE
-ARG DEPTHAI_VERSION
 ARG DEPTHAI_SDK_VERSION
 ARG ROBOTHUB_OAK_VERSION
 ARG VARIANT
@@ -39,7 +38,12 @@ RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-${VARIA
 FROM base
 
 ARG TARGETARCH
+ARG DEPTHAI_VERSION
 
-# Squash the image to save on space
-COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
+# Copy python3 packages
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
+
+# Install depthai
+COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
+COPY install-depthai-version /usr/local/bin
+RUN install-depthai-version ${DEPTHAI_VERSION}

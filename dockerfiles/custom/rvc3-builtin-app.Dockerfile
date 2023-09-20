@@ -14,16 +14,15 @@ RUN apt-get update -qq && \
 
 FROM base AS build
 
-ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETARCH
 ARG DEPTHAI_VERSION
 
-# Install luxonis packages and dependencies
-RUN pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==${DEPTHAI_VERSION}
+# Install depthai
+COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
+COPY install-depthai-version /usr/local/bin
+RUN install-depthai-version ${DEPTHAI_VERSION}
 
 FROM base
 
-ARG TARGETARCH
-
-# Squash the image to save on space
-COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
+# Copy python3 packages
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
