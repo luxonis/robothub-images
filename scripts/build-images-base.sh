@@ -50,7 +50,7 @@ for elem in "${elems[@]}"; do
     docker buildx build \
         --builder remotebuilder \
         --platform linux/amd64,linux/arm64 \
-        --build-arg "BASE_IMAGE=ubuntu:22.04" \
+        --build-arg "BASE_IMAGE=${BASE_IMAGE}" \
         --build-arg "ROBOTICS_VISION_CORE=${ROBOTICS_VISION_CORE}" \
         --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
         --build-arg "DEPTHAI_SDK_VERSION=${DEPTHAI_SDK_VERSION}" \
