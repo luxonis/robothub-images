@@ -4,11 +4,6 @@ concurrency: aws-worker
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - main
-      - develop
-
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
