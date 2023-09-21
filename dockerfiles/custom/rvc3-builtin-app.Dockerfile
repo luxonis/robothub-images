@@ -13,11 +13,20 @@ RUN apt-get update -qq && \
 
 FROM base AS build
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 ARG DEPTHAI_VERSION
 
+# Install dependencies
+RUN apt-get update -qq  && \
+    apt-get install -qq --no-install-recommends ca-certificates wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Download patched libusb
+COPY download-patched-libusb.sh /tmp/
+RUN /tmp/download-patched-libusb.sh
+
 # Install depthai
-COPY libusb-1.0-${TARGETARCH}.so /lib/libusb-1.0.so
 COPY install-depthai-version /usr/local/bin
 RUN install-depthai-version ${DEPTHAI_VERSION}
 
