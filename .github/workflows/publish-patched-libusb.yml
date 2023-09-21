@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         runner:
-          - [runs-on: buildjet-2vcpu-ubuntu-2204, arch: x86_64]
-          - [runs-on: buildjet-2vcpu-ubuntu-2204-arm, arch: aarch64]
+          - {runs-on: buildjet-2vcpu-ubuntu-2204, arch: x86_64}
+          - {runs-on: buildjet-2vcpu-ubuntu-2204-arm, arch: aarch64}
     runs-on: ${{ matrix.runner.runs-on }}
     steps:
       - uses: actions/checkout@v4
