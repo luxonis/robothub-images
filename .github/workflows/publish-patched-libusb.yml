@@ -10,6 +10,7 @@ jobs:
     permissions:
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         runner:
           - {runs-on: buildjet-2vcpu-ubuntu-2204, arch: x86_64}
