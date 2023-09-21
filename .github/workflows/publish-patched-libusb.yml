@@ -31,6 +31,11 @@ jobs:
           cd libusb-1.0.26
           ./configure --disable-udev
           make -j$(nproc)
+      - name: Install aws cli
+        run: |
+          wget -O "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
       - name: Upload to bucket
         working-directory: external/libusb/
         env:
