@@ -32,10 +32,12 @@ jobs:
           ./configure --disable-udev
           make -j$(nproc)
       - name: Install aws cli
+        env:
+          ARCHITECTURE: ${{ matrix.runner.arch }}
         run: |
-          wget -O "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+          wget -O "awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-$ARCHITECTURE.zip"
           unzip awscliv2.zip
-          sudo ./aws/install
+          sudo ./aws/install --update
       - name: Upload to bucket
         working-directory: external/libusb/
         env:
