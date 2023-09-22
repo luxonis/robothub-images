@@ -28,12 +28,12 @@ RUN apt-get update -qq  && \
     rm -rf /var/lib/apt/lists/*
 
 # Download patched libusb
-COPY download-patched-libusb.sh /tmp/
-RUN /tmp/download-patched-libusb.sh
+COPY download-patched-libusb /tmp/
+RUN /tmp/download-patched-libusb ${TARGETARCH}
 
 # Install luxonis packages
-COPY install-luxonis-packages-${ROBOTICS_VISION_CORE}.sh /tmp/
-RUN /tmp/install-luxonis-packages-${ROBOTICS_VISION_CORE}.sh
+COPY install-luxonis-packages /tmp/
+RUN /tmp/install-luxonis-packages ${ROBOTICS_VISION_CORE} ${DEPTHAI_SDK_VERSION} ${ROBOTHUB_OAK_VERSION}
 
 # Install python3 packages
 COPY requirements-${VARIANT}.txt /tmp/

@@ -23,8 +23,8 @@ RUN apt-get update -qq  && \
     rm -rf /var/lib/apt/lists/*
 
 # Download patched libusb
-COPY download-patched-libusb.sh /tmp/
-RUN /tmp/download-patched-libusb.sh
+COPY download-patched-libusb /tmp/
+RUN /tmp/download-patched-libusb
 
 # Install depthai
 COPY install-depthai-version /usr/local/bin
