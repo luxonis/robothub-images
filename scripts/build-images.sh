@@ -13,5 +13,6 @@ export IMAGE_VERSION=$(date +"%Y.%j.%H%M")
 export BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 export DOCKER_BUILDKIT=1
 
+./scripts/build-images-core.sh
 ./scripts/build-images-base.sh
 ./scripts/build-images-custom.sh
