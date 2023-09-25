@@ -48,8 +48,6 @@ for elem in "${elems[@]}"; do
     echo "================================"
 
     docker buildx build \
-        --builder remotebuilder \
-        --platform linux/amd64,linux/arm64 \
         --build-arg "BASE_IMAGE=${BASE_IMAGE}" \
         --build-arg "ROBOTICS_VISION_CORE=${ROBOTICS_VISION_CORE}" \
         --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \

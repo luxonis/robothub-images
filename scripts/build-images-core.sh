@@ -6,8 +6,6 @@ echo "================================"
 echo "Building '${CORE_TAG}'..."
 echo "================================"
 docker buildx build \
-    --builder remotebuilder \
-    --platform linux/amd64,linux/arm64 \
     --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
     --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
     --label "org.opencontainers.image.vendor=Luxonis" \
