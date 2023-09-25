@@ -3,31 +3,17 @@ concurrency: aws-worker
 
 on:
   workflow_dispatch:
-    inputs:
-      depthaiBranch:
-        description: 'DepthAI Git branch'
-        required: true
-        type: string
-
-  repository_dispatch:
-    types: [depthai-python-release, robothub-oak-release, depthai-sdk-release]
 
   push:
     branches:
       - main
       - develop
-    paths:
-      - '.github/workflows/publish-base-images.yml'
-      - '**/*'
-      - '**/*'
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   AWS_X86_IMAGE_ID: ${{ secrets.AWS_X86_IMAGE_ID }}
   AWS_ARM64_IMAGE_ID: ${{ secrets.AWS_ARM64_IMAGE_ID }}
   AWS_DEFAULT_REGION: us-east-1
-  DEPTHAI_BRANCH: ${{ github.event.inputs.depthaiBranch }}
-  EXTERNAL_TRIGGER_REF: ${{ github.event.client_payload.ref }}
 
 jobs:
   build:
@@ -40,29 +26,24 @@ jobs:
       x86_builder_id: ${{ steps.launch_instances.outputs.x86_builder_id }}
       arm_builder_id: ${{ steps.launch_instances.outputs.arm_builder_id }}
     steps:
-      - 
-        uses: actions/checkout@v3
-      -
-        name: Set up Docker Buildx
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
-      -
-        name: Login to GitHub Container Registry
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - 
-        name: Launch instances
+      - name: Launch instances
         id: launch_instances
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
         run: |
           ./scripts/launch-builders.sh
-      -
-        name: Build images
+      - name: Build images
         continue-on-error: true
         env:
           SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
@@ -71,9 +52,7 @@ jobs:
         run: |
           ./scripts/setup-remote-builder.sh
           ./scripts/build-images.sh
-          ./scripts/build-rvc3-image.sh
-      -
-        name: Terminate instances
+      - name: Terminate instances
         if: ${{ always() && steps.launch_instances.outcome == 'success' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

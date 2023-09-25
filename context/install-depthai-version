@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage: $0 <depthai-version>"
+    exit 1
+fi
+
+DEPTHAI_VERSION=$1
+
+echo "Installing depthai version: ${DEPTHAI_VERSION}"
+pip3 install --no-deps --no-cache-dir --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai==${DEPTHAI_VERSION}
+
+echo "Patching depthai installation..."
+find /usr/local/lib/python3.10/dist-packages/depthai.libs -type f -name "libusb*.so" -print -exec cp /lib/libusb-1.0.so {} \;
