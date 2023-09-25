@@ -8,7 +8,7 @@ elif [[ "${GITHUB_REF_NAME}" != "main" ]]; then
     exit 1
 fi
 
-export BASE_PACKAGE="ghcr.io/luxonis/${IMAGE_REF_NAME}"
+export BASE_PACKAGE="ghcr.io/luxonis/${IMAGE_REF_NAME}-${ARCH}"
 export IMAGE_VERSION=$(date +"%Y.%j.%H%M")
 export BASE_TAG="${BASE_PACKAGE}:${IMAGE_VERSION}"
 export DOCKER_BUILDKIT=1
