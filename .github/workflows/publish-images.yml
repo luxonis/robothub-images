@@ -8,9 +8,6 @@ on:
       - main
       - develop
 
-env:
-  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   generate-version:
     name: Generate image version
