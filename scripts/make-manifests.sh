@@ -29,8 +29,8 @@ declare -a suffixes=(
 
 # Make manifests
 for suffix in "${suffixes[@]}"; do
-    docker manifest create "${BASE_TAG}-${suffix}" \
-        --amend "${BASE_AMD64_TAG}-${suffix}" \
-        --amend "${BASE_ARM64_TAG}-${suffix}"
-    docker manifest push "${BASE_TAG}-${suffix}"
+    docker buildx imagetools create \
+        --tag "${BASE_TAG}-${suffix}" \
+        "${BASE_AMD64_TAG}-${suffix}" \
+        "${BASE_ARM64_TAG}-${suffix}"
 done
