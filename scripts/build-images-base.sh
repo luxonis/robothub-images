@@ -24,7 +24,7 @@ for elem in "${elems[@]}"; do
     DEPTHAI_SDK_VERSION=""
     if [[ "${ROBOTICS_VISION_CORE}" == "rvc2" ]]; then
         DEPTHAI_VERSION="2.22.0.0.dev0+4f65e787340f0c83f8c03619d240bbb8af1260df"
-        DEPTHAI_SDK_VERSION="1.13.1"
+        DEPTHAI_SDK_VERSION="1.12.1"
     elif [[ "${ROBOTICS_VISION_CORE}" == "rvc3" ]]; then
         DEPTHAI_VERSION="2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904"
         DEPTHAI_SDK_VERSION="d188eec84fded7ea10a3dc124db7da433a2a3578"
