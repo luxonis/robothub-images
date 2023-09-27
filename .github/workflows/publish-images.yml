@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-  push:
-    branches:
-      - develop
 
 env:
   IMAGE_REF_NAME: ${{ github.event_name == 'release' && 'robothub-app-v2' || 'robothub-app-v2-dev' }}
