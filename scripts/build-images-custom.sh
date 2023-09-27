@@ -9,8 +9,6 @@ echo "Building '${RVC3_BUILTIN_APP_TAG}'..."
 echo "=> Depthai version: ${DEPTHAI_VERSION}"
 echo "================================"
 docker buildx build \
-    --builder remotebuilder \
-    --platform linux/amd64,linux/arm64 \
     --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
     --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
     --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
@@ -31,8 +29,6 @@ echo "Building '${RAE_PROVISIONING_APP_TAG}'..."
 echo "=> Depthai version: ${DEPTHAI_VERSION}"
 echo "================================"
 docker buildx build \
-    --builder remotebuilder \
-    --platform linux/amd64,linux/arm64 \
     --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
     --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
     --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
