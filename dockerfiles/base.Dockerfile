@@ -19,7 +19,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 ARG ROBOTICS_VISION_CORE
 ARG DEPTHAI_SDK_VERSION
-ARG ROBOTHUB_OAK_VERSION
+ARG ROBOTHUB_VERSION
 ARG VARIANT
 
 # Install dependencies
@@ -33,7 +33,7 @@ RUN /tmp/download-patched-libusb ${TARGETARCH}
 
 # Install luxonis packages
 COPY install-luxonis-packages /tmp/
-RUN /tmp/install-luxonis-packages ${ROBOTICS_VISION_CORE} ${DEPTHAI_SDK_VERSION} ${ROBOTHUB_OAK_VERSION}
+RUN /tmp/install-luxonis-packages ${ROBOTICS_VISION_CORE} ${DEPTHAI_SDK_VERSION} ${ROBOTHUB_VERSION}
 
 # Install python3 packages
 COPY requirements-${VARIANT}.txt /tmp/

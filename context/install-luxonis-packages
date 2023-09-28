@@ -8,14 +8,14 @@ fi
 
 ROBOTICS_VISION_CORE=$1
 DEPTHAI_SDK_VERSION=$2
-ROBOTHUB_OAK_VERSION=$3
+ROBOTHUB_VERSION=$3
 
 if [[ "$ROBOTICS_VISION_CORE" == "rvc2" ]]; then
     pip3 install --no-deps --no-cache-dir depthai-sdk==${DEPTHAI_SDK_VERSION}
-    pip3 install --no-deps --no-cache-dir robothub-oak==${ROBOTHUB_OAK_VERSION}
+    pip3 install --no-deps --no-cache-dir robothub==${ROBOTHUB_VERSION}
 elif [[ "$ROBOTICS_VISION_CORE" == "rvc3" ]]; then
     pip3 install --no-deps --no-cache-dir "git+https://github.com/luxonis/depthai.git@${DEPTHAI_SDK_VERSION}#subdirectory=depthai_sdk"
-    pip3 install --no-deps --no-cache-dir robothub-oak==${ROBOTHUB_OAK_VERSION}
+    pip3 install --no-deps --no-cache-dir robothub==${ROBOTHUB_VERSION}
 else
     echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
     exit 1
