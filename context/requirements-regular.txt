@@ -1,0 +1,9 @@
+av
+blobconverter
+distinctipy
+marshmallow
+numpy
+opencv-contrib-python-headless
+requests
+sentry-sdk
+xmltodict

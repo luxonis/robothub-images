@@ -1,0 +1,22 @@
+#!/bin/bash
+
+TARGETARCH_LINUX=""
+if [[ $# -eq 0 ]]; then
+    TARGETARCH_LINUX=$(uname -m)
+elif [[ $# -eq 1 ]]; then
+    TARGETARCH=$1
+    if [[ "${TARGETARCH}" == "amd64" ]]; then
+        TARGETARCH_LINUX="x86_64"
+    elif [[ "${TARGETARCH}" == "arm64" ]]; then
+        TARGETARCH_LINUX="aarch64"
+    else
+        echo "Unknown TARGETARCH: ${TARGETARCH}"
+        exit 1
+    fi
+else
+    echo "Usage: $0 [target-arch]"
+    echo "target-arch: amd64, arm64"
+    exit 1
+fi
+
+wget -O /lib/libusb-1.0.so "https://rh-public.luxonis.com/libusb/1.0.26/libusb-${TARGETARCH_LINUX}.so"
