@@ -30,6 +30,10 @@ RUN /tmp/download-patched-libusb ${TARGETARCH}
 COPY install-depthai-version /usr/local/bin
 RUN install-depthai-version ${DEPTHAI_VERSION}
 
+# Install python3 packages
+COPY requirements-builtin-app.txt /tmp/
+RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-builtin-app.txt
+
 FROM base
 
 # Copy python3 packages

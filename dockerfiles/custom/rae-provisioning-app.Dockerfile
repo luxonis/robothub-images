@@ -31,7 +31,8 @@ COPY install-depthai-version /usr/local/bin
 RUN install-depthai-version ${DEPTHAI_VERSION}
 
 # Install python3 packages
-RUN pip3 install --no-cache-dir --only-binary=:all: opencv-contrib-python-headless
+COPY requirements-rae-provisioning-app.txt /tmp/
+RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-rae-provisioning-app.txt
 
 FROM base
 
