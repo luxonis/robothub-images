@@ -16,6 +16,7 @@ declare -a suffixes=(
     "rvc3-regular"
     "rvc3-minimal-ros2humble"
     "rvc3-regular-ros2humble"
+    "rvc2-builtin-app"
     "rvc3-builtin-app"
     "rae-provisioning-app"
 )
