@@ -1,74 +1,58 @@
 #!/bin/bash
 set -Eeux
 
-########
-# RVC2 #
-########
+declare -A versions
+CONFIG_FILE="scripts/versions.conf"
+if [ ! -f "${CONFIG_FILE}" ]; then
+    echo "The file ${CONFIG_FILE} does not exist."
+    exit 1
+fi
 
-DEPTHAI_VERSION="2.22.0.0.dev0+4f65e787340f0c83f8c03619d240bbb8af1260df"
+echo "Reading versions from ${CONFIG_FILE}..."
+while IFS='=' read -r key value; do
+    versions[$key]=$value
+done < "${CONFIG_FILE}"
 
-RVC2_BUILTIN_APP_TAG="${BASE_TAG}-rvc2-builtin-app"
-echo "================================"
-echo "Building '${RVC2_BUILTIN_APP_TAG}'..."
-echo "=> Depthai version: ${DEPTHAI_VERSION}"
-echo "================================"
-docker buildx build \
-    --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-    --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
-    --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-    --label "org.opencontainers.image.vendor=Luxonis" \
-    --label "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}" \
-    --label "org.opencontainers.image.title=RobotHub RVC2 builtin app image" \
-    --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
-    --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
-    --tag "${RVC2_BUILTIN_APP_TAG}" \
-    --push \
-    --provenance=false \
-    --file dockerfiles/custom/builtin-app.Dockerfile \
-    context/
 
-########
-# RVC3 #
-########
+build_and_push_image() {
+    local version_key=$1
+    local tag_suffix=$2
+    local dockerfile=$3
 
-DEPTHAI_VERSION="2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904"
+    IFS=',' read -r depthai_version _ <<< "${versions[${version_key}]}"
 
-RVC3_BUILTIN_APP_TAG="${BASE_TAG}-rvc3-builtin-app"
-echo "================================"
-echo "Building '${RVC3_BUILTIN_APP_TAG}'..."
-echo "=> Depthai version: ${DEPTHAI_VERSION}"
-echo "================================"
-docker buildx build \
-    --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-    --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
-    --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-    --label "org.opencontainers.image.vendor=Luxonis" \
-    --label "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}" \
-    --label "org.opencontainers.image.title=RobotHub RVC3 builtin app image" \
-    --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
-    --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
-    --tag "${RVC3_BUILTIN_APP_TAG}" \
-    --push \
-    --provenance=false \
-    --file dockerfiles/custom/builtin-app.Dockerfile \
-    context/
+    if [ -z "${depthai_version}" ]; then
+        echo "No version found for ${version_key} in ${CONFIG_FILE}"
+        return
+    fi
 
-RAE_PROVISIONING_APP_TAG="${BASE_TAG}-rae-provisioning-app"
-echo "================================"
-echo "Building '${RAE_PROVISIONING_APP_TAG}'..."
-echo "=> Depthai version: ${DEPTHAI_VERSION}"
-echo "================================"
-docker buildx build \
-    --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-    --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
-    --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-    --label "org.opencontainers.image.vendor=Luxonis" \
-    --label "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}" \
-    --label "org.opencontainers.image.title=RobotHub RAE provisioning app image" \
-    --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
-    --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
-    --tag "${RAE_PROVISIONING_APP_TAG}" \
-    --push \
-    --provenance=false \
-    --file dockerfiles/custom/rae-provisioning-app.Dockerfile \
-    context/
+    local tag="${BASE_TAG}-${tag_suffix}"
+    echo "================================"
+    echo "Building '${tag}'..."
+    echo "=> Depthai version: ${depthai_version}"
+    echo "================================"
+
+    docker buildx build \
+        --build-arg "DEPTHAI_VERSION=${depthai_version}" \
+        --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
+        --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
+        --label "org.opencontainers.image.vendor=Luxonis" \
+        --label "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}" \
+        --label "org.opencontainers.image.title=RobotHub ${tag_suffix} image" \
+        --label "org.opencontainers.image.description=DepthAI version: ${depthai_version}" \
+        --label "com.luxonis.rh.depthai.version=${depthai_version}" \
+        --tag "${tag}" \
+        --push \
+        --provenance=false \
+        --file "dockerfiles/${dockerfile}" \
+        context/
+}
+
+BASE_DOCKERFILE="builtin-app.Dockerfile"
+CUSTOM_DOCKERFILE_CONTEXT="custom"
+build_and_push_image "rvc2" "rvc2-builtin-app" "${CUSTOM_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+build_and_push_image "rvc3" "rvc3-builtin-app" "${CUSTOM_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+build_and_push_image "rvc3" "rae-provisioning-app" "${CUSTOM_DOCKERFILE_CONTEXT}/rae-provisioning-app.Dockerfile"
+
+# Build images for RVC2 DepthAI V3:
+build_and_push_image "rvc2-depthaiV3" "rvc2-depthaiV3-builtin-app" "depthai-v3-git/${BASE_DOCKERFILE}"

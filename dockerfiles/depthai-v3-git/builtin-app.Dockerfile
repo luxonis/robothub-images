@@ -1,6 +1,4 @@
-ARG BASE_IMAGE
-
-FROM ${BASE_IMAGE} AS base
+FROM ubuntu:22.04 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -17,37 +15,26 @@ FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
-ARG ROBOTICS_VISION_CORE
-ARG DEPTHAI_SDK_VERSION
-ARG ROBOTHUB_VERSION
-ARG VARIANT
+ARG DEPTHAI_VERSION
 
 # Install dependencies
 RUN apt-get update -qq  && \
-    apt-get install -qq --no-install-recommends ca-certificates git wget && \
+    apt-get install -qq --no-install-recommends ca-certificates wget && \
     rm -rf /var/lib/apt/lists/*
 
 # Download patched libusb
 COPY download-patched-libusb /tmp/
 RUN /tmp/download-patched-libusb ${TARGETARCH}
 
-# Install luxonis packages
-COPY install-luxonis-packages /tmp/
-RUN /tmp/install-luxonis-packages ${ROBOTICS_VISION_CORE} ${ROBOTHUB_VERSION} ${DEPTHAI_SDK_VERSION}
+# Install depthai
+COPY install-depthai-from-git /usr/local/bin
+RUN install-depthai-from-git ${DEPTHAI_VERSION}
 
 # Install python3 packages
-COPY requirements-${VARIANT}.txt /tmp/
-RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-${VARIANT}.txt
+COPY requirements-builtin-app.txt /tmp/
+RUN pip3 install --no-cache-dir --only-binary=:all: -r /tmp/requirements-builtin-app.txt
 
 FROM base
 
-ARG DEPTHAI_VERSION
-
 # Copy python3 packages
 COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
-
-# Install depthai
-COPY --from=build /lib/libusb-1.0.so /lib/libusb-1.0.so
-COPY install-depthai-version /usr/local/bin
-
-RUN install-depthai-version ${DEPTHAI_VERSION}
