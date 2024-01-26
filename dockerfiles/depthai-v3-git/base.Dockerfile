@@ -17,21 +17,21 @@ FROM base AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
+ARG DEPTHAI_VERSION
 ARG ROBOTICS_VISION_CORE
+ARG DEPTHAI_VERSION
 ARG DEPTHAI_SDK_VERSION
 ARG ROBOTHUB_VERSION
 ARG VARIANT
 
-# Install dependencies
-RUN apt-get update -qq  && \
-    apt-get install -qq --no-install-recommends ca-certificates git wget && \
-    rm -rf /var/lib/apt/lists/*
+COPY install-depthai-from-git /tmp/
+RUN /tmp/install-depthai-from-git ${DEPTHAI_VERSION}
 
 # Download patched libusb
 COPY download-patched-libusb /tmp/
 RUN /tmp/download-patched-libusb ${TARGETARCH}
 
-# Install luxonis packages
+# Install luxonis packages: depthai-sdk, robothub
 COPY install-luxonis-packages /tmp/
 RUN /tmp/install-luxonis-packages ${ROBOTICS_VISION_CORE} ${ROBOTHUB_VERSION} ${DEPTHAI_SDK_VERSION}
 
@@ -48,6 +48,3 @@ COPY --from=build /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3
 
 # Install depthai
 COPY --from=build /lib/libusb-1.0.so /lib/libusb-1.0.so
-COPY install-depthai-version /usr/local/bin
-
-RUN install-depthai-version ${DEPTHAI_VERSION}

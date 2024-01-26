@@ -1,71 +1,105 @@
 #!/bin/bash
 set -Eeux
 
-declare -a elems=(
-    "rvc2 ubuntu:22.04 minimal"
-    "rvc2 ubuntu:22.04 regular"
-    "rvc2 ros:humble-ros-core minimal"
-    "rvc2 ros:humble-ros-base regular"
-    "rvc3 ubuntu:22.04 minimal"
-    "rvc3 ubuntu:22.04 regular"
-    "rvc3 ros:humble-ros-core minimal"
-    "rvc3 ros:humble-ros-base regular"
-)
+declare -A versions
+CONFIG_FILE="scripts/versions.conf"
+if [ ! -f "${CONFIG_FILE}" ]; then
+    echo "The file ${CONFIG_FILE} does not exist."
+    exit 1
+fi
 
-for elem in "${elems[@]}"; do
-    # Define base parameters
-    read -a strarr <<<"$elem"
-    ROBOTICS_VISION_CORE=${strarr[0]}
-    BASE_IMAGE=${strarr[1]}
-    VARIANT=${strarr[2]}
+echo "Reading versions from ${CONFIG_FILE}..."
+while IFS='=' read -r key value; do
+    versions[$key]=$value
+done < "${CONFIG_FILE}"
 
-    # Derive remaining parameters
-    DEPTHAI_VERSION=""
-    DEPTHAI_SDK_VERSION=""
-    if [[ "${ROBOTICS_VISION_CORE}" == "rvc2" ]]; then
-        DEPTHAI_VERSION="2.22.0.0.dev0+4f65e787340f0c83f8c03619d240bbb8af1260df"
-        DEPTHAI_SDK_VERSION="1.12.1"
-    elif [[ "${ROBOTICS_VISION_CORE}" == "rvc3" ]]; then
-        DEPTHAI_VERSION="2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904"
-        DEPTHAI_SDK_VERSION="d188eec84fded7ea10a3dc124db7da433a2a3578"
-    else
-        echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
-        continue
-    fi
-    ROBOTHUB_VERSION="2.4.0"
+# Define base parameters
+ROBOTHUB_VERSION="2.4.0"
 
-    TAG="${BASE_TAG}-${ROBOTICS_VISION_CORE}-${VARIANT}"
-    if [[ "${BASE_IMAGE}" == "ros:humble-ros-core" || "${BASE_IMAGE}" == "ros:humble-ros-base" ]]; then
-        TAG="${TAG}-ros2humble"
+build_and_push_image() {
+    local robotics_vision_core=$1
+    local base_image=$2
+    local variant=$3
+    local dockerfile=$4
+
+    IFS=',' read -r depthai_version depthai_sdk_version <<< "${versions[${robotics_vision_core}]}"
+    if [ -z "${depthai_version}" ]; then
+        echo "No version found for ${robotics_vision_core} in ${CONFIG_FILE}"
+        return
     fi
 
-    # Build
+    local tag="${BASE_TAG}-${robotics_vision_core}-${variant}"
+    if [[ "${base_image}" == "ros:humble-ros-core" || "${base_image}" == "ros:humble-ros-base" ]]; then
+        tag="${tag}-ros2humble"
+    fi
+
     echo "================================"
-    echo "Building '${TAG}'..."
-    echo "=> Depthai version: ${DEPTHAI_VERSION}"
-    echo "=> Depthai SDK version: ${DEPTHAI_SDK_VERSION}"
+    echo "Building '${tag}'..."
+    echo "=> Depthai version: ${depthai_version}"
+    echo "=> Depthai SDK version: ${depthai_sdk_version}"
     echo "=> RobotHub version: ${ROBOTHUB_VERSION}"
     echo "================================"
 
+    LABELS=(
+        "--label" "org.opencontainers.image.source=https://github.com/luxonis/robothub-images"
+        "--label" "org.opencontainers.image.version=${tag}"
+        "--label" "org.opencontainers.image.vendor=Luxonis"
+        "--label" "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}"
+        "--label" "org.opencontainers.image.title=RobotHub App base image"
+        "--label" "org.opencontainers.image.description=DepthAI version: ${depthai_version}"
+        "--label" "com.luxonis.rh.depthai.version=${depthai_version}"
+        "--label" "com.luxonis.rh.robothub.version=${ROBOTHUB_VERSION}"
+    )
+
+    BUILD_ARGS=(
+        "--build-arg" "BASE_IMAGE=${base_image}"
+        "--build-arg" "ROBOTICS_VISION_CORE=${robotics_vision_core}"
+        "--build-arg" "DEPTHAI_SDK_VERSION=${depthai_sdk_version}"
+        "--build-arg" "DEPTHAI_VERSION=${depthai_version}"
+        "--build-arg" "ROBOTHUB_VERSION=${ROBOTHUB_VERSION}"
+        "--build-arg" "VARIANT=${variant}"
+    )
+
+    # Check if the Robotics Vision Core version is not rvc2-depthaiV3
+    if [[ "${robotics_vision_core}" != "rvc2-depthaiV3" ]]; then
+        LABELS+=("--label" "com.luxonis.rh.depthai-sdk.version=${depthai_sdk_version}")
+    fi
+
     docker buildx build \
-        --build-arg "BASE_IMAGE=${BASE_IMAGE}" \
-        --build-arg "ROBOTICS_VISION_CORE=${ROBOTICS_VISION_CORE}" \
-        --build-arg "DEPTHAI_VERSION=${DEPTHAI_VERSION}" \
-        --build-arg "DEPTHAI_SDK_VERSION=${DEPTHAI_SDK_VERSION}" \
-        --build-arg "ROBOTHUB_VERSION=${ROBOTHUB_VERSION}" \
-        --build-arg "VARIANT=${VARIANT}" \
-        --label "org.opencontainers.image.source=https://github.com/luxonis/robothub-images" \
-        --label "org.opencontainers.image.version=${IMAGE_VERSION}" \
-        --label "org.opencontainers.image.vendor=Luxonis" \
-        --label "org.opencontainers.image.ref.name=${IMAGE_REF_NAME}" \
-        --label "org.opencontainers.image.title=RobotHub App base image" \
-        --label "org.opencontainers.image.description=DepthAI version: ${DEPTHAI_VERSION}" \
-        --label "com.luxonis.rh.depthai.version=${DEPTHAI_VERSION}" \
-        --label "com.luxonis.rh.depthai-sdk.version=${DEPTHAI_SDK_VERSION}" \
-        --label "com.luxonis.rh.robothub.version=${ROBOTHUB_VERSION}" \
-        --tag "${TAG}" \
-        --push \
-        --provenance=false \
-        --file dockerfiles/base.Dockerfile \
-        context/
+    "${BUILD_ARGS[@]}" \
+    "${LABELS[@]}" \
+    --tag "${tag}" \
+    --push \
+    --provenance=false \
+    --file "dockerfiles/${dockerfile}" \
+    context/
+}
+
+# Define base parameters
+BASE_DOCKERFILE="base.Dockerfile"
+DEPTHAI_V3_DOCKERFILE_CONTEXT="depthai-v3-git"
+
+declare -a elems=(
+    # RVC2 - DepthAI from registry:
+    "rvc2 ubuntu:22.04 minimal ${BASE_DOCKERFILE}"
+    "rvc2 ubuntu:22.04 regular ${BASE_DOCKERFILE}"
+    "rvc2 ros:humble-ros-core minimal ${BASE_DOCKERFILE}"
+    "rvc2 ros:humble-ros-base regular ${BASE_DOCKERFILE}"
+
+    # RVC3 - DepthAI from registry:
+    "rvc3 ubuntu:22.04 minimal ${BASE_DOCKERFILE}"
+    "rvc3 ubuntu:22.04 regular ${BASE_DOCKERFILE}"
+    "rvc3 ros:humble-ros-core minimal ${BASE_DOCKERFILE}"
+    "rvc3 ros:humble-ros-base regular ${BASE_DOCKERFILE}"
+
+    # RVC2 - DepthAI V3 - built from source:
+    "rvc2-depthaiV3 ubuntu:22.04 minimal ${DEPTHAI_V3_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+    "rvc2-depthaiV3 ubuntu:22.04 regular ${DEPTHAI_V3_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+    "rvc2-depthaiV3 ros:humble-ros-core minimal ${DEPTHAI_V3_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+    "rvc2-depthaiV3 ros:humble-ros-base regular ${DEPTHAI_V3_DOCKERFILE_CONTEXT}/${BASE_DOCKERFILE}"
+)
+
+for elem in "${elems[@]}"; do
+    read -ra strarr <<<"$elem"
+    build_and_push_image "${strarr[0]}" "${strarr[1]}" "${strarr[2]}" "${strarr[3]}"
 done
