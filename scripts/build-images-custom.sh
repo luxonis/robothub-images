@@ -5,7 +5,7 @@ set -Eeux
 # RVC2 #
 ########
 
-DEPTHAI_VERSION="2.22.0.0.dev0+4f65e787340f0c83f8c03619d240bbb8af1260df"
+DEPTHAI_VERSION="2.24.0.0"
 
 RVC2_BUILTIN_APP_TAG="${BASE_TAG}-rvc2-builtin-app"
 echo "================================"

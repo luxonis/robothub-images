@@ -23,7 +23,7 @@ for elem in "${elems[@]}"; do
     DEPTHAI_VERSION=""
     DEPTHAI_SDK_VERSION=""
     if [[ "${ROBOTICS_VISION_CORE}" == "rvc2" ]]; then
-        DEPTHAI_VERSION="2.22.0.0.dev0+4f65e787340f0c83f8c03619d240bbb8af1260df"
+        DEPTHAI_VERSION="2.24.0.0"
         DEPTHAI_SDK_VERSION="1.12.1"
     elif [[ "${ROBOTICS_VISION_CORE}" == "rvc3" ]]; then
         DEPTHAI_VERSION="2.22.0.0.dev0+8b9eceb316ce60d57d9157ecec48534b548e8904"
@@ -32,7 +32,7 @@ for elem in "${elems[@]}"; do
         echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
         continue
     fi
-    ROBOTHUB_VERSION="2.4.0"
+    ROBOTHUB_VERSION="2.5.0"
 
     TAG="${BASE_TAG}-${ROBOTICS_VISION_CORE}-${VARIANT}"
     if [[ "${BASE_IMAGE}" == "ros:humble-ros-core" || "${BASE_IMAGE}" == "ros:humble-ros-base" ]]; then
