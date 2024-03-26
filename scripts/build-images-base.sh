@@ -32,7 +32,7 @@ for elem in "${elems[@]}"; do
         echo "Unknown ROBOTICS_VISION_CORE: ${ROBOTICS_VISION_CORE}"
         continue
     fi
-    ROBOTHUB_VERSION="2.5.2"
+    ROBOTHUB_VERSION="2.5.3"
 
     TAG="${BASE_TAG}-${ROBOTICS_VISION_CORE}-${VARIANT}"
     if [[ "${BASE_IMAGE}" == "ros:humble-ros-core" || "${BASE_IMAGE}" == "ros:humble-ros-base" ]]; then
