@@ -34,8 +34,8 @@ mv /tmp/default.tmp /etc/nginx/sites-available/default
 
 # NGINX related configuration files and folders
 # Output the final configuration for debugging purposes
-# echo "NGINX - Server configuration:"
-# cat /etc/nginx/sites-available/default
+echo "NGINX - Server configuration:"
+cat /etc/nginx/sites-available/default
 # echo "NGINX - Global configuration:"
 # cat /etc/nginx/nginx.conf
 # 
