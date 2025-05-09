@@ -26,11 +26,8 @@ fi
 
 # Replace placeholders in the NGINX config with env variables (limited to specific ones)
 envsubst '${OAKAPP_STATIC_FRONTEND_CONFIGURATION} ${OAKAPP_STATIC_FRONTEND_PORT} ${OAKAPP_STATIC_FRONTEND_PATH}' \
-    < /etc/nginx/sites-available/default \
-    > /tmp/default.tmp
-
-# Apply the updated configuration
-mv /tmp/default.tmp /etc/nginx/sites-available/default
+    < /etc/nginx/templates/site.template \
+    > /etc/nginx/sites-available/default
 
 # NGINX related configuration files and folders
 # Output the final configuration for debugging purposes

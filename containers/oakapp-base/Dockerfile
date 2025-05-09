@@ -83,7 +83,7 @@ COPY /nginx/setup.sh /tmp/setup_nginx.sh
 RUN chmod +x /tmp/setup_nginx.sh && \
     /tmp/setup_nginx.sh && \
     rm /tmp/setup_nginx.sh
-COPY /nginx/server.template /etc/nginx/sites-available/default
+COPY /nginx/server.template /etc/nginx/templates/site.template
 COPY /nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Start runit
